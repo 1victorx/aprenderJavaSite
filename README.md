@@ -2,7 +2,7 @@
 
 Uma aplicação web completa para estudar e praticar Java diariamente com exercícios gamificados, streak, XP, níveis e conquistas.
 
-## 🚀 Características
+## Características
 
 - **Exercícios Variados**: Algoritmos, Padrões OO, Java Core, Concorrência
 - **Editor de Código**: Monaco Editor (mesmo do VS Code) com syntax highlighting
@@ -13,14 +13,14 @@ Uma aplicação web completa para estudar e praticar Java diariamente com exerc�
 - **Acessibilidade**: WCAG 2.1 AA
 - **Stack**: Spring Boot 3.2 (Java 21) + Vanilla JS + Vite + H2
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 - Java 21+
 - Maven 3.9+
 - Node.js 20+
 - Docker (para sandbox de execução)
 
-## 🛠️ Instalação e Execução
+## Instalação e Execução
 
 ### Desenvolvimento Local
 
@@ -48,7 +48,7 @@ docker-compose up -d --build
 - Backend: `http://localhost:8080/api`
 - H2 Console: `http://localhost:8080/api/h2-console`
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 java-study/
@@ -81,14 +81,14 @@ java-study/
     └── adr/                # Architecture Decision Records
 ```
 
-## 🔐 Autenticação
+##  Autenticação
 
 - JWT com expiração de 30 dias
 - Refresh token rotation (7 dias)
 - Cookies HttpOnly + localStorage (dupla defesa)
 - BCrypt para hash de senha (strength 12)
 
-## 🏃 Execução de Código (Sandbox)
+##  Execução de Código (Sandbox)
 
 - Container Docker efêmero por execução
 - Imagem: `eclipse-temurin:21-jdk-alpine`
@@ -96,7 +96,7 @@ java-study/
 - Isolamento: network=none, readonly rootfs, user namespace
 - Cleanup automático após execução
 
-## 🎮 Gamificação
+##  Gamificação
 
 ### XP e Níveis
 - Nível 1: 0 XP
@@ -117,7 +117,7 @@ java-study/
 - **Poliglota**: 1 de cada categoria
 - **Temporais**: Coruja Noturna (00-05h), Madrugador (05-08h), Guerreiro de Fim de Semana
 
-## 🔧 Configuração
+##  Configuração
 
 ### Variáveis de Ambiente (Backend)
 ```yaml
@@ -131,7 +131,7 @@ SANDBOX_MEMORY: 256         # MB
 - Desenvolvimento: H2 arquivo (`./data/javastudy.mv.db`)
 - Produção: Configure PostgreSQL/MySQL no `application.yml`
 
-## 📚 API Endpoints
+##  API Endpoints
 
 ### Autenticação
 - `POST /api/auth/register` - Registrar
@@ -150,7 +150,7 @@ SANDBOX_MEMORY: 256         # MB
 - `GET /api/gamification/dashboard` - Stats do usuário
 - `GET /api/gamification/history` - Histórico paginado
 
-## 🧪 Testes
+##  Testes
 
 ```bash
 # Backend
@@ -162,7 +162,7 @@ cd frontend
 npm test
 ```
 
-## 📝 ADRs (Decisões Arquiteturais)
+##  ADRs (Decisões Arquiteturais)
 
 Veja `docs/adr/` para decisões documentadas:
 - ADR-001: Sandbox Strategy (Docker + nsjail)
@@ -170,7 +170,7 @@ Veja `docs/adr/` para decisões documentadas:
 - ADR-003: Auth (Stateless JWT)
 - ADR-004: Frontend (Vanilla JS + Vite + Monaco)
 
-## 🤝 Contribuindo
+##  Contribuindo
 
 1. Fork o projeto
 2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
@@ -178,11 +178,11 @@ Veja `docs/adr/` para decisões documentadas:
 4. Push para a branch (`git push origin feature/nova-funcionalidade`)
 5. Abra um Pull Request
 
-## 📄 Licença
+## Licença
 
 MIT License - veja [LICENSE](LICENSE) para detalhes.
 
-## 🙏 Agradecimentos
+##  Agradecimentos
 
 - [Monaco Editor](https://microsoft.github.io/monaco-editor/) - Editor de código
 - [IBM Plex Fonts](https://github.com/IBM/plex) - Tipografia
