@@ -1,0 +1,35 @@
+# Backend Dockerfile
+FROM eclipse-temurin:21-jdk-alpine AS builder
+
+WORKDIR /app
+
+COPY pom.xml .
+COPY src ./src
+
+RUN apk add --no-cache maven && \
+    mvn clean package -DskipTests
+
+# Runtime stage
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup -g 1000 -S javastudy && \
+    adduser -u 1000 -S javastudy -G javastudy
+
+# Install docker CLI for sandbox (if using Docker-in-Docker)
+RUN apk add --no-cache docker-cli
+
+COPY --from=builder /app/target/*.jar app.jar
+
+# Create data directory
+RUN mkdir -p /app/data && chown -R javastudy:javastudy /app
+
+USER javastudy
+
+EXPOSE 8080
+
+ENV JAVA_OPTS="-Xms256m -Xmx512m"
+
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

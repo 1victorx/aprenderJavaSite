@@ -1,0 +1,211 @@
+/* Design Tokens - JavaStudy */
+:root {
+  /* === CORES BASE (Dark Theme Default) === */
+  --color-bg-primary: #0d1117;
+  --color-bg-secondary: #161b22;
+  --color-bg-tertiary: #21262d;
+  --color-bg-hover: #30363d;
+  
+  --color-text-primary: #e6edf3;
+  --color-text-secondary: #8b949e;
+  --color-text-muted: #6e7681;
+  --color-text-on-primary: #ffffff;
+  
+  --color-border: #30363d;
+  --color-border-focus: #58a6ff;
+  
+  /* === CORES FUNCIONAIS === */
+  --color-primary: #58a6ff;
+  --color-primary-hover: #79b8ff;
+  --color-primary-soft: rgba(88, 166, 255, 0.15);
+  
+  --color-success: #3fb950;
+  --color-success-soft: rgba(63, 185, 80, 0.15);
+  
+  --color-warning: #d29922;
+  --color-warning-soft: rgba(210, 153, 34, 0.15);
+  
+  --color-error: #f85149;
+  --color-error-soft: rgba(248, 81, 73, 0.15);
+  
+  /* === CATEGORIAS === */
+  --color-cat-algorithms: #58a6ff;
+  --color-cat-oo-patterns: #a371f7;
+  --color-cat-java-core: #3fb950;
+  --color-cat-concurrency: #d29922;
+  
+  /* === TIPOGRAFIA === */
+  --font-family-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-mono: 'IBM Plex Mono', 'Fira Code', 'Cascadia Code', monospace;
+  
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* === ESPAÇAMENTO (base 4px) === */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  
+  /* === BORDAS === */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+  
+  /* === SOMBRAS === */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  
+  /* === TRANSIÇÕES === */
+  --transition-fast: 120ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+  
+  /* === LAYOUT === */
+  --sidebar-width: 260px;
+  --header-height: 56px;
+  --container-max: 1200px;
+  --editor-min-height: 400px;
+  
+  /* === Z-INDEX === */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+  --z-tooltip: 500;
+}
+
+/* Light Theme */
+[data-theme="light"] {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f6f8fa;
+  --color-bg-tertiary: #ffffff;
+  --color-bg-hover: #f3f4f6;
+  
+  --color-text-primary: #1f2328;
+  --color-text-secondary: #656d76;
+  --color-text-muted: #8b949e;
+  --color-text-on-primary: #ffffff;
+  
+  --color-border: #d0d7de;
+  --color-border-focus: #0969da;
+  
+  --color-primary: #0969da;
+  --color-primary-hover: #0860ca;
+  --color-primary-soft: rgba(9, 105, 218, 0.1);
+  
+  --color-success: #1a7f37;
+  --color-success-soft: rgba(26, 127, 55, 0.1);
+  
+  --color-warning: #9a6700;
+  --color-warning-soft: rgba(154, 103, 0, 0.1);
+  
+  --color-error: #cf222e;
+  --color-error-soft: rgba(207, 34, 46, 0.1);
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus Visible */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Skip Link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-radius: var(--radius-md);
+  z-index: var(--z-tooltip);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-primary-soft);
+  color: var(--color-text-primary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}

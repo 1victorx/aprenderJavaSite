@@ -1,0 +1,67 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: javastudy
+  
+  datasource:
+    url: jdbc:h2:file:./data/javastudy;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+  security:
+    user:
+      name: admin
+      password: admin
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 2592000000  # 30 days in milliseconds
+  refresh-expiration: 604800000  # 7 days
+
+# Sandbox Configuration
+sandbox:
+  docker-image: eclipse-temurin:21-jdk-alpine
+  timeout-seconds: 3
+  memory-limit-mb: 256
+  cpu-limit: 0.5
+  use-docker: false
+
+# Rate Limiting
+ratelimit:
+  login:
+    requests: 5
+    duration-minutes: 1
+  execute:
+    requests: 30
+    duration-minutes: 1
+
+# Logging
+logging:
+  level:
+    com.javastudy: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    container_name: javastudy-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - backend_data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock  # For Docker-in-Docker sandbox
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-mySuperSecretKeyForJavaStudyThatIsAtLeast256BitsLongForHS256Algorithm}
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - javastudy-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/auth/me"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    container_name: javastudy-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - javastudy-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  javastudy-network:
+    driver: bridge
+
+volumes:
+  backend_data:
+    driver: local
