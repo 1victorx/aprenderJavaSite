@@ -1,0 +1,15 @@
+spring:
+  h2:
+    console:
+      enabled: false
+
+sandbox:
+  # A public environment must provide a real Docker sandbox. Never execute
+  # user-submitted Java code inside the API process.
+  use-docker: ${SANDBOX_USE_DOCKER:true}
+  allow-local-fallback: false
+
+logging:
+  level:
+    com.javastudy: INFO
+    org.springframework.security: WARN

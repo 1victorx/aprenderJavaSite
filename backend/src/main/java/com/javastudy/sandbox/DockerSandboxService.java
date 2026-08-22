@@ -38,18 +38,21 @@ public class DockerSandboxService implements Sandbox {
     private final int timeoutSeconds;
     private final int memoryLimitMb;
     private final boolean useDocker;
+    private final boolean allowLocalFallback;
     private final DockerClient dockerClient;
 
     public DockerSandboxService(
             @Value("${sandbox.docker-image:eclipse-temurin:21-jdk-alpine}") String dockerImage,
             @Value("${sandbox.timeout-seconds:3}") int timeoutSeconds,
             @Value("${sandbox.memory-limit-mb:256}") int memoryLimitMb,
-            @Value("${sandbox.use-docker:false}") boolean useDocker
+            @Value("${sandbox.use-docker:false}") boolean useDocker,
+            @Value("${sandbox.allow-local-fallback:true}") boolean allowLocalFallback
     ) {
         this.dockerImage = dockerImage;
         this.timeoutSeconds = timeoutSeconds;
         this.memoryLimitMb = memoryLimitMb;
         this.useDocker = useDocker;
+        this.allowLocalFallback = allowLocalFallback;
 
         DockerClient client = null;
         if (useDocker) {
@@ -76,11 +79,18 @@ public class DockerSandboxService implements Sandbox {
 
     @Override
     public ExecutionResult execute(CodeRequest request) {
-        if (dockerClient != null && useDocker) {
+        if (useDocker) {
+            if (dockerClient == null) {
+                return ExecutionResult.error("A execução está temporariamente indisponível porque o sandbox Docker não está conectado.");
+            }
             return executeInDocker(request);
-        } else {
+        }
+
+        if (allowLocalFallback) {
             return executeLocally(request);
         }
+
+        return ExecutionResult.error("A execução de código está desabilitada neste ambiente até que um sandbox seguro seja configurado.");
     }
 
     private ExecutionResult executeInDocker(CodeRequest request) {

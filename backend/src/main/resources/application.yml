@@ -26,15 +26,10 @@ spring:
   
   h2:
     console:
-      enabled: true
+      enabled: ${H2_CONSOLE_ENABLED:false}
       path: /h2-console
       settings:
         web-allow-others: false
-
-  security:
-    user:
-      name: admin
-      password: admin
 
 # JWT Configuration
 jwt:
@@ -50,6 +45,8 @@ sandbox:
   cpu-limit: 0.5
   # Local JavaCompiler fallback is the default. Set SANDBOX_USE_DOCKER=true when Docker is available.
   use-docker: ${SANDBOX_USE_DOCKER:false}
+  # Never enable this in a public environment. Local execution is only for development.
+  allow-local-fallback: ${SANDBOX_ALLOW_LOCAL_FALLBACK:true}
 
 # Rate Limiting
 ratelimit:
@@ -67,8 +64,8 @@ app:
 # Logging
 logging:
   level:
-    com.javastudy: DEBUG
-    org.springframework.security: DEBUG
+    com.javastudy: INFO
+    org.springframework.security: WARN
     org.hibernate.SQL: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

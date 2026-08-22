@@ -187,9 +187,17 @@ O E2E inicia backend e frontend automaticamente. Para rodar apenas o frontend, u
 O workflow `.github/workflows/deploy-pages.yml` publica o frontend em:
 `https://1victorx.github.io/aprenderJavaSite/`.
 
-GitHub Pages não executa Spring Boot, H2 ou o sandbox Java. Para cadastro, login e execução funcionarem no endereço publicado, configure a variável de repositório `VITE_API_BASE_URL` com a URL HTTPS de um backend publicado e inclua essa origem na política CORS do backend. Sem essa variável, o site ainda abre e mostra claramente que a API está indisponível.
+GitHub Pages não executa Spring Boot, H2 ou o sandbox Java. Para cadastro, login e progresso funcionarem no endereço publicado, configure a variável de repositório `VITE_API_BASE_URL` com a URL HTTPS do backend e inclua essa origem na política CORS do backend. Depois, execute o workflow `Publish JavaStudy to GitHub Pages` ou faça push na `master`.
 
-No momento, o repositório está privado e a conta GitHub informa que o plano atual não permite Pages para esse repositório. O workflow ficou pronto e manual (`workflow_dispatch`); para ativá-lo, torne o repositório público ou use um plano que ofereça Pages para repositórios privados.
+O repositório é público e o workflow está habilitado para publicação automática. A variável `VITE_API_BASE_URL` ainda precisa apontar para uma implantação real do backend; sem ela, o frontend abre, mas informa que a API está indisponível.
+
+### Backend hospedado
+
+O arquivo `render.yaml` prepara uma implantação do backend em um serviço Docker gerenciado. Ele usa H2 para o primeiro deploy e mantém a execução de código desabilitada quando não existe um sandbox Docker conectado. Isso evita executar código enviado por usuários dentro do processo público da API.
+
+Para uma implantação completa, o ambiente precisa fornecer um Docker socket isolado e persistência de banco. Depois de criar o serviço no provedor, copie a URL HTTPS gerada para `VITE_API_BASE_URL` nas variáveis do repositório e confirme que `CORS_ALLOWED_ORIGINS` contém `https://1victorx.github.io`.
+
+O H2 em serviços gratuitos pode perder dados ao reiniciar. Antes de uso real por mais de uma pessoa, migre o datasource para PostgreSQL e mantenha o sandbox em infraestrutura isolada.
 
 ##  ADRs (Decisões Arquiteturais)
 

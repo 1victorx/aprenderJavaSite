@@ -1,3 +1,11 @@
 # Local development only. Production and Docker must provide JWT_SECRET.
 jwt:
   secret: ${JWT_SECRET:local-only-javastudy-secret-change-before-production-2026}
+
+spring:
+  h2:
+    console:
+      enabled: true
+
+sandbox:
+  allow-local-fallback: true

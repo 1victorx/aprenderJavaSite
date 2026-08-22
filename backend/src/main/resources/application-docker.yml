@@ -1,0 +1,9 @@
+spring:
+  h2:
+    console:
+      enabled: false
+
+sandbox:
+  # Docker Compose mounts the Docker socket. If it is unavailable, fail closed
+  # instead of running submitted code in the API process.
+  allow-local-fallback: false
