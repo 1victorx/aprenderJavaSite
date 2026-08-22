@@ -28,9 +28,10 @@ yarn-error.log*
 .env.local
 .env.*.local
 
-# Maven
-.mvn/
-!/mvn/wrapper/maven-wrapper.properties
+# Maven Wrapper
+.mvn/*
+!**/.mvn/maven-wrapper.jar
+!**/.mvn/maven-wrapper.properties
 
 # H2 Database
 backend/data/*.mv.db

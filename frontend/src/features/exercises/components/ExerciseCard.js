@@ -22,9 +22,9 @@ export const ExerciseCard = {
           </div>
         </div>
         <div class="exercise-item-actions">
-          <button class="btn btn-primary" data-exercise-slug="${exercise.slug}">
+          <a class="btn btn-primary" data-link href="/exercises/${encodeURIComponent(exercise.slug)}">
             ${exercise.solved ? 'Refazer' : 'Fazer'}
-          </button>
+          </a>
         </div>
       </article>
     `;

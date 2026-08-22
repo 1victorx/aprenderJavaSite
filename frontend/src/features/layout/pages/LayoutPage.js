@@ -5,9 +5,12 @@ export const LayoutPage = {
   },
 
   afterRender() {
-    // Check authentication
     if (!window.authStore?.isAuthenticated) {
       window.router?.navigate('/login');
+      return;
+    }
+    if (window.router?.getCurrentRoute()?.path === '/') {
+      window.router?.navigate('/dashboard');
     }
   }
 };

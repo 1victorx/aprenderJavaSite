@@ -24,8 +24,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
+        AuthResponse authResponse = authService.register(request);
+        addTokenCookies(response, authResponse);
+        return ResponseEntity.ok(authResponse);
     }
 
     @PostMapping("/login")
@@ -56,6 +58,9 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<AuthResponse.UserDto> me(@AuthenticationPrincipal User user) {
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
         return ResponseEntity.ok(new AuthResponse.UserDto(user));
     }
 

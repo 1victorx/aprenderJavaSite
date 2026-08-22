@@ -4,6 +4,7 @@ export class Router {
     this.routes = [];
     this.currentRoute = null;
     this.notFoundRoute = null;
+    this.navigationVersion = 0;
   }
 
   add(path, component, meta = {}) {
@@ -35,8 +36,13 @@ export class Router {
   }
 
   navigate(path) {
+    this.navigationVersion += 1;
     window.location.hash = path;
     // resolve will be called by hashchange listener
+  }
+
+  getNavigationVersion() {
+    return this.navigationVersion;
   }
 
   resolve(path) {

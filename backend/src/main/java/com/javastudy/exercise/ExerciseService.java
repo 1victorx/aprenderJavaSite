@@ -10,6 +10,7 @@ import com.javastudy.gamification.GamificationService;
 import com.javastudy.sandbox.Sandbox;
 import com.javastudy.shared.exception.ApiException;
 import com.javastudy.user.User;
+import com.javastudy.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,17 +27,20 @@ public class ExerciseService {
     private final Sandbox sandbox;
     private final AttemptHistoryRepository attemptHistoryRepository;
     private final GamificationService gamificationService;
+    private final UserRepository userRepository;
 
     public ExerciseService(ExerciseRepository exerciseRepository,
                            ExerciseMapper exerciseMapper,
                            Sandbox sandbox,
                            AttemptHistoryRepository attemptHistoryRepository,
-                           GamificationService gamificationService) {
+                           GamificationService gamificationService,
+                           UserRepository userRepository) {
         this.exerciseRepository = exerciseRepository;
         this.exerciseMapper = exerciseMapper;
         this.sandbox = sandbox;
         this.attemptHistoryRepository = attemptHistoryRepository;
         this.gamificationService = gamificationService;
+        this.userRepository = userRepository;
     }
 
     public Page<ExerciseDTO> findAll(Pageable pageable) {
@@ -65,6 +69,8 @@ public class ExerciseService {
 
     @Transactional
     public RunCodeResponse runCode(Long exerciseId, RunCodeRequest request, User user) {
+        User managedUser = userRepository.findById(user.getId())
+            .orElseThrow(() -> ApiException.unauthorized("Usuário não encontrado"));
         Exercise exercise = exerciseRepository.findById(exerciseId)
             .orElseThrow(() -> ApiException.notFound("Exercício não encontrado"));
 
@@ -96,10 +102,10 @@ public class ExerciseService {
         int xpEarned = 0;
         if (result.success()) {
             xpEarned = exercise.getXpReward();
-            gamificationService.awardXp(user, xpEarned, exercise);
+            gamificationService.awardXp(managedUser, xpEarned, exercise);
         }
 
-        saveAttempt(user, exercise, request.getCode(), result, xpEarned);
+        saveAttempt(managedUser, exercise, request.getCode(), result, xpEarned);
 
         return result.success()
             ? RunCodeResponse.success(result.stdout(), 0L, xpEarned, testResults)

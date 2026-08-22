@@ -40,6 +40,7 @@ public class AttemptHistory {
     private Integer executionTimeMs;
 
     @Column(name = "xp_earned", nullable = false)
+    @Builder.Default
     private Integer xpEarned = 0;
 
     @Column(name = "created_at", nullable = false, updatable = false)

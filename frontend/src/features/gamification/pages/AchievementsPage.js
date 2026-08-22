@@ -33,9 +33,11 @@ export const AchievementsPage = {
   async afterRender() {
     try {
       this.data = await window.apiClient.get('/api/gamification/dashboard');
+      if (window.router?.getCurrentRoute()?.path !== '/achievements') return;
       this.renderAchievements();
       this.bindTabs();
     } catch (error) {
+      if (window.router?.getCurrentRoute()?.path !== '/achievements') return;
       window.toast?.error('Erro ao carregar conquistas: ' + error.message);
     }
   },

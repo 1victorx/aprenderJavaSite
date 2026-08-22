@@ -26,8 +26,10 @@ public class TestCase {
     private String expectedOutput;
 
     @Column(name = "is_hidden", nullable = false)
+    @Builder.Default
     private Boolean isHidden = true;
 
     @Column(name = "test_order", nullable = false)
+    @Builder.Default
     private Integer order = 0;
 }

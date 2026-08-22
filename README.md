@@ -6,7 +6,7 @@ Uma aplicação web completa para estudar e praticar Java diariamente com exerc�
 
 - **Exercícios Variados**: Algoritmos, Padrões OO, Java Core, Concorrência
 - **Editor de Código**: Monaco Editor (mesmo do VS Code) com syntax highlighting
-- **Execução Segura**: Sandbox Docker isolado para rodar código Java
+- **Execução Segura**: Sandbox local com limites de tempo/memória; Docker opcional
 - **Gamificação**: XP, Streak diário, Níveis, Conquistas
 - **Progresso**: Dashboard com estatísticas, calendário de streak, histórico
 - **Tema**: Dark/Light mode com persistência
@@ -18,7 +18,7 @@ Uma aplicação web completa para estudar e praticar Java diariamente com exerc�
 - Java 21+
 - Maven 3.9+
 - Node.js 20+
-- Docker (para sandbox de execução)
+- Docker (opcional; usado apenas quando `SANDBOX_USE_DOCKER=true`)
 
 ## Instalação e Execução
 
@@ -27,7 +27,8 @@ Uma aplicação web completa para estudar e praticar Java diariamente com exerc�
 #### Backend
 ```bash
 cd backend
-mvn spring-boot:run
+export JWT_SECRET="gere-uma-chave-secreta-com-pelo-menos-32-caracteres"
+./mvnw spring-boot:run
 ```
 Backend roda em `http://localhost:8080/api`
 
@@ -90,7 +91,8 @@ java-study/
 
 ##  Execução de Código (Sandbox)
 
-- Container Docker efêmero por execução
+- Execução local por padrão usando `JavaCompiler` e `ProcessBuilder`
+- Container Docker efêmero por execução quando `SANDBOX_USE_DOCKER=true`
 - Imagem: `eclipse-temurin:21-jdk-alpine`
 - Limites: 3s CPU, 256MB RAM, 50MB disco
 - Isolamento: network=none, readonly rootfs, user namespace
@@ -153,13 +155,14 @@ SANDBOX_MEMORY: 256         # MB
 ##  Testes
 
 ```bash
-# Backend
+# Backend (Java 21 recomendado; o projeto também compila com JDKs mais novos)
 cd backend
-mvn test
+export JWT_SECRET="gere-uma-chave-secreta-com-pelo-menos-32-caracteres"
+./mvnw test
 
-# Frontend (quando implementado)
+# Frontend
 cd frontend
-npm test
+npm run build
 ```
 
 ##  ADRs (Decisões Arquiteturais)

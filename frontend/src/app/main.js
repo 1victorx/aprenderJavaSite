@@ -7,32 +7,28 @@ import { Sidebar } from '../features/layout/components/Sidebar.js';
 import { Theme } from '../shared/utils/theme.js';
 import { setupRoutes } from './routes.js';
 
-// Initialize core services
+// Initialize core services in dependency order so AuthStore can hydrate ApiClient.
 const apiClient = new ApiClient();
+window.apiClient = apiClient;
+
 const authStore = new AuthStore();
 const toast = new Toast();
 const theme = new Theme();
 
-// Make globally accessible
-window.apiClient = apiClient;
 window.authStore = authStore;
 window.toast = toast;
 window.theme = theme;
 
-// Initialize theme
 theme.init();
 
-// Initialize router with routes
 const router = new Router();
 setupRoutes(router);
 
-// App container
 const app = document.getElementById('app');
 if (!app) {
-  console.error('FATAL: #app container not found in DOM');
+  throw new Error('FATAL: #app container not found in DOM');
 }
 
-// Get current path from hash or pathname
 function getCurrentPath() {
   const hash = window.location.hash;
   if (hash.startsWith('#')) {
@@ -41,20 +37,21 @@ function getCurrentPath() {
   return window.location.pathname + window.location.search || '/';
 }
 
-// Render layout based on current route
+let renderGeneration = 0;
+
 function renderLayout() {
-  if (!app || !router.currentRoute) {
-    console.warn('renderLayout: no app or currentRoute', { app, currentRoute: router.currentRoute });
+  const route = router.currentRoute;
+  if (!route) {
+    console.warn('renderLayout: no current route');
     return;
   }
 
-  const isAuthPage = router.currentRoute.meta?.public === true;
-  
+  const generation = ++renderGeneration;
+  const isAuthPage = route.meta?.public === true;
+
   if (isAuthPage) {
-    // Auth pages: simple layout, no sidebar
-    app.innerHTML = `<main id="main">${router.currentRoute.component()}</main>`;
+    app.innerHTML = `<main id="main">${route.component()}</main>`;
   } else {
-    // Protected pages: full layout with sidebar
     app.innerHTML = `
       <div class="app-layout">
         <header class="app-header" role="banner">
@@ -64,66 +61,68 @@ function renderLayout() {
           ${Sidebar.render()}
         </aside>
         <main class="app-main" id="main" role="main">
-          ${router.currentRoute.component ? router.currentRoute.component() : ''}
+          ${route.component ? route.component() : ''}
         </main>
       </div>
       <div class="toast-container" id="toast-container" aria-live="polite" aria-label="Notificações"></div>
     `;
-    
+
     Header.bindEvents();
     Sidebar.bindEvents();
   }
 
-  // Call afterRender for the matched page
-  const routePath = router.currentRoute.path;
-  const pageMap = window.__pageMap;
-  if (pageMap && pageMap[routePath]?.afterRender) {
-    setTimeout(() => {
+  const page = window.__pageMap?.[route.path];
+  if (page?.afterRender) {
+    setTimeout(async () => {
+      // Do not let an old async page render into a newer route.
+      if (generation !== renderGeneration || router.currentRoute !== route) return;
       try {
-        pageMap[routePath].afterRender();
-      } catch (e) {
-        console.error('afterRender error for', routePath, e);
+        await page.afterRender();
+      } catch (error) {
+        console.error(`afterRender failed for ${route.path}`, error);
       }
     }, 0);
   }
 }
 
-// Navigation: resolve route + re-render
 function handleNavigation(path) {
   router.resolve(path);
   renderLayout();
 }
 
-// Auth state listener - re-render on auth change
 authStore.subscribe(() => {
   renderLayout();
 });
 
-// Handle hash changes (main navigation mechanism)
 window.addEventListener('hashchange', () => {
   handleNavigation(getCurrentPath());
 });
 
-// Handle browser back/forward
 window.addEventListener('popstate', () => {
   handleNavigation(getCurrentPath());
 });
 
-// Global click handler for navigation links [data-link]
-document.addEventListener('click', (e) => {
-  const link = e.target.closest('a[data-link]');
-  if (link) {
-    e.preventDefault();
-    const href = link.getAttribute('href');
-    if (href) {
-      router.navigate(href);
-    }
-  }
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('a[data-link]');
+  if (!link) return;
+
+  event.preventDefault();
+  const href = link.getAttribute('href');
+  if (href) router.navigate(href);
 });
 
-// Initial route resolve + render
-handleNavigation(getCurrentPath());
+async function bootstrap() {
+  if (authStore.isAuthenticated) {
+    try {
+      await authStore.fetchMe();
+    } catch {
+      authStore.logout();
+    }
+  }
+  handleNavigation(getCurrentPath());
+}
 
-// Export for debugging
 window.router = router;
 window.app = { apiClient, authStore, toast, theme, router };
+
+bootstrap();

@@ -62,8 +62,12 @@ export const DashboardPage = {
   async afterRender() {
     try {
       this.data = await window.apiClient.get('/api/gamification/dashboard');
+      if (window.router?.getCurrentRoute()?.path !== '/dashboard') {
+        return;
+      }
       this.renderDashboard();
     } catch (error) {
+      if (window.router?.getCurrentRoute()?.path !== '/dashboard') return;
       window.toast?.error('Erro ao carregar dashboard: ' + error.message);
     }
   },

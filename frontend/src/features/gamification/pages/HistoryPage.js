@@ -1,4 +1,5 @@
 // History Page
+import { Pagination } from '../../../shared/components/Pagination.js';
 export const HistoryPage = {
   currentPage: 0,
   pageSize: 20,
@@ -53,12 +54,14 @@ export const HistoryPage = {
       });
 
       const data = await window.apiClient.get(`/api/gamification/history?${params}`);
+      if (window.router?.getCurrentRoute()?.path !== '/history') return;
       this.renderHistory(data.content, data.totalPages, data.totalElements);
     } catch (error) {
+      if (window.router?.getCurrentRoute()?.path !== '/history') return;
       tableEl.innerHTML = `
         <div class="empty-state">
           <div class="empty-state-icon">⚠️</div>
-          <p>Erro ao carregar: ${error.message}</p>
+          <p>Erro ao carregar: ${this.escapeHtml(error.message)}</p>
           <button class="btn btn-primary" onclick="window.historyPage?.loadHistory()">Tentar novamente</button>
         </div>
       `;
@@ -114,18 +117,16 @@ export const HistoryPage = {
     `;
 
     if (totalPages > 1) {
-      import('../../../shared/components/Pagination.js').then(({ Pagination }) => {
-        paginationEl.innerHTML = Pagination.render(this.currentPage, totalPages);
-        paginationEl.style.display = 'flex';
-        
-        paginationEl.querySelectorAll('.page-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const page = parseInt(btn.dataset.page);
-            if (!isNaN(page)) {
-              this.currentPage = page;
-              this.loadHistory();
-            }
-          });
+      paginationEl.innerHTML = Pagination.render(this.currentPage, totalPages);
+      paginationEl.style.display = 'flex';
+
+      paginationEl.querySelectorAll('.page-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const page = parseInt(btn.dataset.page);
+          if (!isNaN(page)) {
+            this.currentPage = page;
+            this.loadHistory();
+          }
         });
       });
     } else {

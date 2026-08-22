@@ -15,8 +15,8 @@ export const ExerciseDetailPage = {
             <div>
               <h1 id="exercise-title">${this.exercise?.title || 'Carregando...'}</h1>
               <div style="display: flex; gap: var(--space-2); margin-top: var(--space-2);">
-                <span class="badge badge-category ${this.exercise?.category?.toLowerCase().replace('_', '-') || ''}">${this.formatCategory(this.exercise?.category)}</span>
-                <span class="badge badge-difficulty ${this.exercise?.difficulty?.toLowerCase() || 'easy'}">${this.exercise?.difficulty?.toLowerCase() || 'Fácil'}</span>
+                <span id="exercise-category" class="badge badge-category ${this.exercise?.category?.toLowerCase().replace('_', '-') || ''}">${this.formatCategory(this.exercise?.category) || 'Carregando...'}</span>
+                <span id="exercise-difficulty" class="badge badge-difficulty ${this.exercise?.difficulty?.toLowerCase() || 'easy'}">${this.exercise?.difficulty?.toLowerCase() || 'Carregando...'}</span>
               </div>
             </div>
           </div>
@@ -33,12 +33,10 @@ export const ExerciseDetailPage = {
               <div id="exercise-description" class="markdown-content"></div>
             </section>
             
-            ${this.exercise?.visibleTestCases?.length ? `
-              <section class="exercise-description" style="margin-top: var(--space-6);" aria-labelledby="examples-heading">
-                <h2 id="examples-heading">Exemplos</h2>
-                <div id="exercise-examples"></div>
-              </section>
-            ` : ''}
+            <section class="exercise-description" style="margin-top: var(--space-6);" aria-labelledby="examples-heading">
+              <h2 id="examples-heading">Exemplos</h2>
+              <div id="exercise-examples"></div>
+            </section>
           </div>
 
           <div class="exercise-editor-section">
@@ -57,30 +55,59 @@ export const ExerciseDetailPage = {
   async afterRender() {
     const params = window.router?.getCurrentRoute()?.params || {};
     const slug = params.slug;
+    const navigationVersion = window.router?.getNavigationVersion();
     
     if (!slug) return;
 
     try {
       this.exercise = await window.apiClient.get(`/api/exercises/slug/${slug}`);
-      this.initializePage();
+      const currentRoute = window.router?.getCurrentRoute();
+      if (window.router?.getNavigationVersion() !== navigationVersion ||
+          currentRoute?.path !== '/exercises/:slug' || currentRoute.params?.slug !== slug) {
+        return;
+      }
+      await this.initializePage();
     } catch (error) {
+      const currentRoute = window.router?.getCurrentRoute();
+      if (window.router?.getNavigationVersion() !== navigationVersion ||
+          currentRoute?.path !== '/exercises/:slug' || currentRoute.params?.slug !== slug) return;
+      console.error('[ExerciseDetailPage] failed to load exercise', error);
       window.toast?.error('Erro ao carregar exercício: ' + error.message);
-      window.router?.navigate('/exercises');
+      const main = document.getElementById('main');
+      if (main) {
+        main.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <p>Erro ao carregar exercício: ${this.escapeHtml(error.message)}</p>
+            <a class="btn btn-primary" data-link href="/exercises">Voltar para exercícios</a>
+          </div>
+        `;
+      }
     }
   },
 
-  initializePage() {
+  async initializePage() {
     // Update title
     document.getElementById('exercise-title').textContent = this.exercise.title;
     document.title = `${this.exercise.title} - JavaStudy`;
+    const categoryEl = document.getElementById('exercise-category');
+    const difficultyEl = document.getElementById('exercise-difficulty');
+    if (categoryEl) {
+      categoryEl.textContent = this.formatCategory(this.exercise.category);
+      categoryEl.className = `badge badge-category ${this.exercise.category?.toLowerCase().replace('_', '-') || ''}`;
+    }
+    if (difficultyEl) {
+      difficultyEl.textContent = this.exercise.difficulty?.toLowerCase() || 'Fácil';
+      difficultyEl.className = `badge badge-difficulty ${this.exercise.difficulty?.toLowerCase() || 'easy'}`;
+    }
 
     // Render description
     const descEl = document.getElementById('exercise-description');
     descEl.innerHTML = this.renderMarkdown(this.exercise.description);
 
     // Render examples
-    if (this.exercise.visibleTestCases?.length) {
-      const examplesEl = document.getElementById('exercise-examples');
+    const examplesEl = document.getElementById('exercise-examples');
+    if (examplesEl && this.exercise.visibleTestCases?.length) {
       examplesEl.innerHTML = this.exercise.visibleTestCases.map((tc, i) => `
         <div style="margin-bottom: var(--space-4);">
           <h4 style="margin-bottom: var(--space-2);">Exemplo ${i + 1}</h4>
@@ -96,10 +123,12 @@ export const ExerciseDetailPage = {
           </div>
         </div>
       `).join('');
+    } else if (examplesEl) {
+      examplesEl.innerHTML = '<p>Os exemplos serão disponibilizados em breve.</p>';
     }
 
     // Initialize Monaco Editor
-    this.initEditor();
+    await this.initEditor();
 
     // Bind run button
     const runBtn = document.getElementById('run-btn');
@@ -146,16 +175,10 @@ export const ExerciseDetailPage = {
   },
 
   loadMonaco() {
-    return new Promise((resolve, reject) => {
-      if (window.monaco) {
-        resolve(window.monaco);
-        return;
-      }
-
-      require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.47.0/min/vs' }});
-      require(['vs/editor/editor.main'], () => {
-        resolve(window.monaco);
-      }, reject);
+    if (window.monaco) return Promise.resolve(window.monaco);
+    return import('monaco-editor').then(monaco => {
+      window.monaco = monaco;
+      return monaco;
     });
   },
 

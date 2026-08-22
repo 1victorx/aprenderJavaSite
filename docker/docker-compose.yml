@@ -12,12 +12,13 @@ services:
       - backend_data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock  # For Docker-in-Docker sandbox
     environment:
-      - JWT_SECRET=${JWT_SECRET:-mySuperSecretKeyForJavaStudyThatIsAtLeast256BitsLongForHS256Algorithm}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET must be set}
+      - SANDBOX_USE_DOCKER=true
       - SPRING_PROFILES_ACTIVE=docker
     networks:
       - javastudy-network
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/auth/me"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/exercises?page=0&size=1"]
       interval: 30s
       timeout: 10s
       retries: 3

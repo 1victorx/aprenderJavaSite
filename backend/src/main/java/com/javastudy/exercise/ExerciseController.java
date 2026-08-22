@@ -4,6 +4,7 @@ import com.javastudy.exercise.dto.ExerciseDTO;
 import com.javastudy.exercise.dto.RunCodeRequest;
 import com.javastudy.exercise.dto.RunCodeResponse;
 import com.javastudy.user.User;
+import com.javastudy.shared.exception.ApiException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +49,7 @@ public class ExerciseController {
             @Valid @RequestBody RunCodeRequest request,
             @AuthenticationPrincipal User user
     ) {
+        if (user == null) throw ApiException.unauthorized("Login necessário para executar código");
         return ResponseEntity.ok(exerciseService.runCode(id, request, user));
     }
 
@@ -57,6 +59,7 @@ public class ExerciseController {
             @Valid @RequestBody RunCodeRequest request,
             @AuthenticationPrincipal User user
     ) {
+        if (user == null) throw ApiException.unauthorized("Login necessário para executar código");
         return ResponseEntity.ok(exerciseService.runCodeBySlug(slug, request, user));
     }
 }

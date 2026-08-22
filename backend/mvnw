@@ -42,7 +42,10 @@ if $cygwin ; then
 fi
 
 # Construct the path to the maven wrapper jar
-WRAPPER_JAR="$MAVEN_PROJECTBASEDIR/.mvn/maven-wrapper.jar"
+# Java on Windows/MSYS does not reliably resolve absolute /c/... classpath
+# entries. Run from the project directory and use a relative classpath.
+cd "$MAVEN_PROJECTBASEDIR" || exit 1
+WRAPPER_JAR=".mvn/maven-wrapper.jar"
 
 # Check if the wrapper jar exists
 if [ ! -f "$WRAPPER_JAR" ]; then

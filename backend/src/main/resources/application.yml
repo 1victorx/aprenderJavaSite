@@ -46,7 +46,8 @@ sandbox:
   timeout-seconds: 3
   memory-limit-mb: 256
   cpu-limit: 0.5
-  use-docker: false
+  # Local JavaCompiler fallback is the default. Set SANDBOX_USE_DOCKER=true when Docker is available.
+  use-docker: ${SANDBOX_USE_DOCKER:false}
 
 # Rate Limiting
 ratelimit:

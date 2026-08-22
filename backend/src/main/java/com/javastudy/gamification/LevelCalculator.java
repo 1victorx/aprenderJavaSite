@@ -10,11 +10,12 @@ public final class LevelCalculator {
             return 1;
         }
         double discriminant = 1 + 8.0 * totalXp / XP_PER_LEVEL_BASE;
-        return (int) Math.floor((Math.sqrt(discriminant) - 1) / 2);
+        return Math.max(1, (int) Math.floor((1 + Math.sqrt(discriminant)) / 2));
     }
 
     public static long xpForLevel(int level) {
-        return XP_PER_LEVEL_BASE * (long) level * (level + 1) / 2;
+        if (level <= 1) return 0;
+        return XP_PER_LEVEL_BASE * (long) (level - 1) * level / 2;
     }
 
     public static long xpToNextLevel(long totalXp) {

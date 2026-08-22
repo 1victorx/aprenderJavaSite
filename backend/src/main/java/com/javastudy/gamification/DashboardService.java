@@ -1,6 +1,9 @@
 package com.javastudy.gamification;
 
 import com.javastudy.gamification.dto.DashboardDTO;
+import com.javastudy.exercise.Exercise;
+import com.javastudy.exercise.ExerciseRepository;
+import com.javastudy.exercise.mapper.ExerciseMapper;
 import com.javastudy.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,28 +13,47 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class DashboardService {
-    private final UserProgressRepository progressRepository;
+    private final GamificationService gamificationService;
     private final AttemptHistoryRepository attemptHistoryRepository;
+    private final ExerciseRepository exerciseRepository;
+    private final ExerciseMapper exerciseMapper;
 
-    public DashboardService(UserProgressRepository progressRepository, AttemptHistoryRepository attemptHistoryRepository) {
-        this.progressRepository = progressRepository;
+    public DashboardService(GamificationService gamificationService,
+                            AttemptHistoryRepository attemptHistoryRepository,
+                            ExerciseRepository exerciseRepository,
+                            ExerciseMapper exerciseMapper) {
+        this.gamificationService = gamificationService;
         this.attemptHistoryRepository = attemptHistoryRepository;
+        this.exerciseRepository = exerciseRepository;
+        this.exerciseMapper = exerciseMapper;
     }
 
     public DashboardDTO getDashboard(User user) {
-        UserProgress progress = progressRepository.findByUserId(user.getId())
-            .orElseGet(() -> progressRepository.save(
-                UserProgress.builder().user(user).userId(user.getId()).build()
-            ));
+        UserProgress progress = gamificationService.getOrCreateProgress(user);
 
         Page<AttemptHistory> recentAttempts = attemptHistoryRepository.findByUserIdOrderByCreatedAtDesc(user.getId(), Pageable.ofSize(10));
 
         DashboardDTO dto = DashboardDTO.from(progress, LevelCalculator.getLevelInfo(progress.getTotalXp()), recentAttempts.getContent());
         dto.setStreakCalendar(buildStreakCalendar(progress));
+        Set<Long> solvedIds = attemptHistoryRepository.findByUserIdOrderByCreatedAtDesc(
+                user.getId(), Pageable.unpaged()
+            ).stream()
+            .filter(attempt -> Boolean.TRUE.equals(attempt.getPassed()))
+            .map(attempt -> attempt.getExercise().getId())
+            .collect(Collectors.toSet());
+        Exercise next = exerciseRepository.findAllOrdered(Pageable.ofSize(50)).getContent().stream()
+            .filter(exercise -> !solvedIds.contains(exercise.getId()))
+            .findFirst()
+            .orElse(null);
+        if (next != null) {
+            dto.setNextExercise(exerciseMapper.toDTO(next));
+        }
         return dto;
     }
 

@@ -38,6 +38,8 @@ export const ExercisesPage = {
   },
 
   async afterRender() {
+    const navigationVersion = window.router?.getNavigationVersion();
+    this.loadGeneration = (this.loadGeneration || 0) + 1;
     this.currentPage = 0;
     this.pageSize = 20;
     this.currentCategory = '';
@@ -64,10 +66,10 @@ export const ExercisesPage = {
       }, 300);
     });
 
-    await this.loadExercises();
+    await this.loadExercises(navigationVersion, this.loadGeneration);
   },
 
-  async loadExercises() {
+  async loadExercises(navigationVersion = window.router?.getNavigationVersion(), generation = ++this.loadGeneration) {
     const listEl = document.getElementById('exercise-list');
     const paginationEl = document.getElementById('pagination');
 
@@ -86,13 +88,18 @@ export const ExercisesPage = {
       if (this.currentCategory) params.append('category', this.currentCategory);
 
       const data = await window.apiClient.get(`/api/exercises?${params}`);
-      
+      if (generation !== this.loadGeneration ||
+          window.router?.getNavigationVersion() !== navigationVersion ||
+          window.router?.getCurrentRoute()?.path !== '/exercises') return;
       this.renderExercises(data.content, data.totalPages, data.totalElements);
     } catch (error) {
+      if (generation !== this.loadGeneration ||
+          window.router?.getNavigationVersion() !== navigationVersion ||
+          window.router?.getCurrentRoute()?.path !== '/exercises') return;
       listEl.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1;">
           <div class="empty-state-icon">⚠️</div>
-          <p>Erro ao carregar exercícios: ${error.message}</p>
+          <p>Erro ao carregar exercícios: ${this.escapeHtml(error.message)}</p>
           <button class="btn btn-primary" onclick="window.exercisesPage?.loadExercises()">Tentar novamente</button>
         </div>
       `;
@@ -137,12 +144,6 @@ export const ExercisesPage = {
       paginationEl.style.display = 'none';
     }
 
-    // Bind exercise card buttons
-    listEl.querySelectorAll('[data-exercise-slug]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        window.router?.navigate(`/exercises/${btn.dataset.exerciseSlug}`);
-      });
-    });
   }
 };
 

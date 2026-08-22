@@ -4,6 +4,7 @@ import com.javastudy.gamification.Achievement;
 import com.javastudy.gamification.AttemptHistory;
 import com.javastudy.gamification.LevelCalculator;
 import com.javastudy.gamification.UserProgress;
+import com.javastudy.exercise.dto.ExerciseDTO;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ public class DashboardDTO {
     private List<AchievementDTO> achievements;
     private List<AchievementDTO> lockedAchievements;
     private List<StreakDayDTO> streakCalendar;
+    private ExerciseDTO nextExercise;
 
     @Data
     public static class AchievementDTO {

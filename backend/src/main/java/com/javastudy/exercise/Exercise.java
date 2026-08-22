@@ -43,9 +43,11 @@ public class Exercise {
     private String solutionCode;
 
     @Column(name = "xp_reward", nullable = false)
+    @Builder.Default
     private Integer xpReward = 10;
 
     @Column(name = "exercise_order", nullable = false)
+    @Builder.Default
     private Integer order = 0;
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
