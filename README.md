@@ -189,6 +189,8 @@ O workflow `.github/workflows/deploy-pages.yml` publica o frontend em:
 
 GitHub Pages não executa Spring Boot, H2 ou o sandbox Java. Para cadastro, login e execução funcionarem no endereço publicado, configure a variável de repositório `VITE_API_BASE_URL` com a URL HTTPS de um backend publicado e inclua essa origem na política CORS do backend. Sem essa variável, o site ainda abre e mostra claramente que a API está indisponível.
 
+No momento, o repositório está privado e a conta GitHub informa que o plano atual não permite Pages para esse repositório. O workflow ficou pronto e manual (`workflow_dispatch`); para ativá-lo, torne o repositório público ou use um plano que ofereça Pages para repositórios privados.
+
 ##  ADRs (Decisões Arquiteturais)
 
 Veja `docs/adr/` para decisões documentadas:
