@@ -7,6 +7,7 @@ import { Header } from '../features/layout/components/Header.js';
 import { Sidebar } from '../features/layout/components/Sidebar.js';
 import { Theme } from '../shared/utils/theme.js';
 import { setupRoutes } from './routes.js';
+import { ErrorState } from '../shared/components/ErrorState.js';
 
 // Initialize core services in dependency order so AuthStore can hydrate ApiClient.
 const apiClient = new ApiClient();
@@ -82,6 +83,13 @@ function renderLayout() {
         await page.afterRender();
       } catch (error) {
         console.error(`afterRender failed for ${route.path}`, error);
+        const main = document.getElementById('main');
+        if (main && generation === renderGeneration) {
+          main.innerHTML = ErrorState.render({
+            title: 'Não foi possível carregar esta tela',
+            message: 'A conexão pode ter sido interrompida. Tente novamente.'
+          });
+        }
       }
     }, 0);
   }
@@ -105,6 +113,11 @@ window.addEventListener('popstate', () => {
 });
 
 document.addEventListener('click', (event) => {
+  if (event.target.closest('[data-global-retry]')) {
+    event.preventDefault();
+    handleNavigation(getCurrentPath());
+    return;
+  }
   const link = event.target.closest('[data-link][href]');
   if (!link) return;
 

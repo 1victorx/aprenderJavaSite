@@ -28,9 +28,19 @@ Uma aplicação web completa para estudar e praticar Java diariamente com exerc�
 ```bash
 cd backend
 export JWT_SECRET="gere-uma-chave-secreta-com-pelo-menos-32-caracteres"
-./mvnw spring-boot:run
+mvn spring-boot:run
 ```
 Backend roda em `http://localhost:8080/api`
+
+No PowerShell do Windows, use:
+
+```powershell
+cd backend
+$env:JWT_SECRET = "gere-uma-chave-secreta-com-pelo-menos-32-caracteres"
+mvn spring-boot:run
+```
+
+Em desenvolvimento local, o projeto possui um perfil `local` com uma chave temporária automática para evitar que o backend fique indisponível por configuração ausente. Sempre forneça `JWT_SECRET` em ambientes compartilhados, Docker e produção.
 
 #### Frontend
 ```bash
@@ -39,6 +49,8 @@ npm install
 npm run dev
 ```
 Frontend roda em `http://localhost:5173`
+
+Se o cadastro mostrar “Não foi possível conectar”, confirme primeiro que o backend está em execução na porta `8080`. O frontend encaminha `/api` para esse backend durante o desenvolvimento.
 
 ### Com Docker Compose (Produção)
 ```bash
@@ -86,7 +98,7 @@ java-study/
 
 - JWT com expiração de 30 dias
 - Refresh token rotation (7 dias)
-- Cookies HttpOnly + localStorage (dupla defesa)
+- Cookies HttpOnly para a sessão; o frontend mantém o token apenas em memória
 - BCrypt para hash de senha (strength 12)
 
 ##  Execução de Código (Sandbox)
@@ -143,10 +155,11 @@ SANDBOX_MEMORY: 256         # MB
 - `GET /api/auth/me` - Perfil atual
 
 ### Exercícios
-- `GET /api/exercises` - Listar (paginado, filtro categoria)
+- `GET /api/exercises` - Listar (paginado, busca `q`, filtros `category`, `difficulty` e `status`)
 - `GET /api/exercises/{id}` - Detalhe
 - `GET /api/exercises/slug/{slug}` - Detalhe por slug
 - `POST /api/exercises/{id}/run` - Executar código
+- `GET /api/gamification/history/exercise/{id}` - Últimas execuções do exercício atual
 
 ### Gamificação
 - `GET /api/gamification/dashboard` - Stats do usuário
@@ -163,7 +176,18 @@ export JWT_SECRET="gere-uma-chave-secreta-com-pelo-menos-32-caracteres"
 # Frontend
 cd frontend
 npm run build
+npm run test:e2e:install # uma vez, para instalar o Chromium do Playwright
+npm run test:e2e
 ```
+
+O E2E inicia backend e frontend automaticamente. Para rodar apenas o frontend, use `npm run dev`.
+
+### GitHub Pages
+
+O workflow `.github/workflows/deploy-pages.yml` publica o frontend em:
+`https://1victorx.github.io/aprenderJavaSite/`.
+
+GitHub Pages não executa Spring Boot, H2 ou o sandbox Java. Para cadastro, login e execução funcionarem no endereço publicado, configure a variável de repositório `VITE_API_BASE_URL` com a URL HTTPS de um backend publicado e inclua essa origem na política CORS do backend. Sem essa variável, o site ainda abre e mostra claramente que a API está indisponível.
 
 ##  ADRs (Decisões Arquiteturais)
 

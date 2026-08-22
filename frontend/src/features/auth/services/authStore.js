@@ -6,38 +6,6 @@ export class AuthStore {
     this.refreshToken = null;
     this.listeners = new Set();
     
-    // Load from localStorage
-    this.loadFromStorage();
-  }
-
-  loadFromStorage() {
-    try {
-      const stored = localStorage.getItem('javastudy_auth');
-      if (stored) {
-        const data = JSON.parse(stored);
-        this.user = data.user;
-        this.accessToken = data.accessToken;
-        this.refreshToken = data.refreshToken;
-        
-        if (this.accessToken) {
-          window.apiClient?.setToken(this.accessToken);
-        }
-      }
-    } catch (e) {
-      console.warn('Failed to load auth from storage', e);
-    }
-  }
-
-  saveToStorage() {
-    try {
-      localStorage.setItem('javastudy_auth', JSON.stringify({
-        user: this.user,
-        accessToken: this.accessToken,
-        refreshToken: this.refreshToken
-      }));
-    } catch (e) {
-      console.warn('Failed to save auth to storage', e);
-    }
   }
 
   get isAuthenticated() {
@@ -66,22 +34,20 @@ export class AuthStore {
     this.refreshToken = refreshToken;
     if (user) this.user = user;
     window.apiClient?.setToken(accessToken);
-    this.saveToStorage();
     this.notify();
   }
 
   setUser(user) {
     this.user = user;
-    this.saveToStorage();
     this.notify();
   }
 
   logout() {
+    window.apiClient?.post('/api/auth/logout', {}).catch(() => {});
     this.user = null;
     this.accessToken = null;
     this.refreshToken = null;
     window.apiClient?.clearToken();
-    localStorage.removeItem('javastudy_auth');
     this.notify();
   }
 
@@ -112,12 +78,15 @@ export class AuthStore {
     try {
       const data = await window.apiClient.get('/api/auth/me');
       this.user = data;
-      this.saveToStorage();
       this.notify();
       return data;
     } catch (e) {
       if (e.status === 401) {
-        this.logout();
+        try {
+          return await this.refresh();
+        } catch {
+          this.logout();
+        }
       }
       throw e;
     }

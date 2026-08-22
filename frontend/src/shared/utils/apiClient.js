@@ -1,7 +1,9 @@
 // API Client with JWT handling
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+
 export class ApiClient {
-  constructor(baseUrl = '') {
-    this.baseUrl = baseUrl;
+  constructor(baseUrl = configuredApiBaseUrl) {
+    this.baseUrl = baseUrl.replace(/\/$/, '');
     this.accessToken = null;
     this.refreshPromise = null;
   }
@@ -59,7 +61,8 @@ export class ApiClient {
       return data;
     } catch (error) {
       if (error instanceof ApiError) throw error;
-      throw new ApiError(0, 'NETWORK_ERROR', 'Erro de conexão. Verifique sua internet.');
+      const target = this.baseUrl || 'o backend local na porta 8080';
+      throw new ApiError(0, 'NETWORK_ERROR', `Não foi possível conectar a ${target}. Verifique se o backend está em execução.`);
     }
   }
 

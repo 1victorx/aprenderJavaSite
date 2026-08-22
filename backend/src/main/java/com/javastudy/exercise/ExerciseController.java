@@ -25,11 +25,15 @@ public class ExerciseController {
     @GetMapping
     public ResponseEntity<Page<ExerciseDTO>> list(
             @RequestParam(name = "category", required = false) ExerciseCategory category,
+            @RequestParam(name = "difficulty", required = false) Difficulty difficulty,
+            @RequestParam(name = "q", required = false) String query,
+            @RequestParam(name = "status", defaultValue = "all") String status,
+            @AuthenticationPrincipal User user,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        Page<ExerciseDTO> exercises = category != null
-            ? exerciseService.findByCategory(category, pageable)
-            : exerciseService.findAll(pageable);
+        Page<ExerciseDTO> exercises = exerciseService.search(
+            query, category, difficulty, status, user == null ? null : user.getId(), pageable
+        );
         return ResponseEntity.ok(exercises);
     }
 

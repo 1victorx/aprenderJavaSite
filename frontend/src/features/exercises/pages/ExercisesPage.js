@@ -13,15 +13,26 @@ export const ExercisesPage = {
               Pratique e evolua suas habilidades em Java
             </p>
           </div>
-          <div class="exercises-filters">
-            <select class="form-input" id="category-filter" style="width: auto; min-width: 200px;" aria-label="Filtrar por categoria">
+          <div class="exercises-filters" aria-label="Filtros de exercícios">
+            <select class="form-input" id="category-filter" aria-label="Filtrar por categoria">
               <option value="">Todas as categorias</option>
               <option value="ALGORITHMS">Algoritmos</option>
               <option value="OO_PATTERNS">Padrões OO</option>
               <option value="JAVA_CORE">Java Core</option>
               <option value="CONCURRENCY">Concorrência</option>
             </select>
-            <input type="search" class="form-input" id="search-input" placeholder="Buscar exercícios..." style="width: auto; min-width: 250px;" aria-label="Buscar exercícios">
+            <select class="form-input" id="difficulty-filter" aria-label="Filtrar por dificuldade">
+              <option value="">Todas as dificuldades</option>
+              <option value="EASY">Fácil</option>
+              <option value="MEDIUM">Médio</option>
+              <option value="HARD">Difícil</option>
+            </select>
+            <select class="form-input" id="status-filter" aria-label="Filtrar por status">
+              <option value="all">Todos os exercícios</option>
+              <option value="unsolved">Ainda não resolvidos</option>
+              <option value="solved">Resolvidos</option>
+            </select>
+            <input type="search" class="form-input" id="search-input" placeholder="Buscar no catálogo..." aria-label="Buscar exercícios">
           </div>
         </div>
         
@@ -43,15 +54,44 @@ export const ExercisesPage = {
     this.currentPage = 0;
     this.pageSize = 20;
     this.currentCategory = '';
+    this.currentDifficulty = '';
+    this.currentStatus = 'all';
     this.searchQuery = '';
     
     const listEl = document.getElementById('exercise-list');
     const paginationEl = document.getElementById('pagination');
     const categoryFilter = document.getElementById('category-filter');
     const searchInput = document.getElementById('search-input');
+    const difficultyFilter = document.getElementById('difficulty-filter');
+    const statusFilter = document.getElementById('status-filter');
+    document.getElementById('exercise-list')?.addEventListener('click', (event) => {
+      if (!event.target.closest('[data-clear-exercise-filters]')) return;
+      categoryFilter.value = '';
+      difficultyFilter.value = '';
+      statusFilter.value = 'all';
+      searchInput.value = '';
+      this.currentCategory = '';
+      this.currentDifficulty = '';
+      this.currentStatus = 'all';
+      this.searchQuery = '';
+      this.currentPage = 0;
+      this.loadExercises();
+    });
 
     categoryFilter?.addEventListener('change', () => {
       this.currentCategory = categoryFilter.value;
+      this.currentPage = 0;
+      this.loadExercises();
+    });
+
+    difficultyFilter?.addEventListener('change', () => {
+      this.currentDifficulty = difficultyFilter.value;
+      this.currentPage = 0;
+      this.loadExercises();
+    });
+
+    statusFilter?.addEventListener('change', () => {
+      this.currentStatus = statusFilter.value;
       this.currentPage = 0;
       this.loadExercises();
     });
@@ -86,18 +126,15 @@ export const ExercisesPage = {
         size: this.pageSize
       });
       if (this.currentCategory) params.append('category', this.currentCategory);
+      if (this.currentDifficulty) params.append('difficulty', this.currentDifficulty);
+      if (this.currentStatus !== 'all') params.append('status', this.currentStatus);
+      if (this.searchQuery) params.append('q', this.searchQuery);
 
       const data = await window.apiClient.get(`/api/exercises?${params}`);
       if (generation !== this.loadGeneration ||
           window.router?.getNavigationVersion() !== navigationVersion ||
           window.router?.getCurrentRoute()?.path !== '/exercises') return;
-      const exercises = this.searchQuery
-        ? data.content.filter(exercise => {
-            const query = this.searchQuery.toLocaleLowerCase('pt-BR');
-            return `${exercise.title} ${exercise.description}`.toLocaleLowerCase('pt-BR').includes(query);
-          })
-        : data.content;
-      this.renderExercises(exercises, exercises.length ? data.totalPages : 0, exercises.length);
+      this.renderExercises(data.content, data.totalPages, data.totalElements);
     } catch (error) {
       if (generation !== this.loadGeneration ||
           window.router?.getNavigationVersion() !== navigationVersion ||
@@ -121,7 +158,8 @@ export const ExercisesPage = {
       listEl.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1;">
           <div class="empty-state-icon">🔍</div>
-          <p>Nenhum exercício encontrado. Tente outro filtro.</p>
+          <p>Nenhum exercício encontrado com estes filtros.</p>
+          <button type="button" class="btn btn-secondary" data-clear-exercise-filters>Limpar filtros</button>
         </div>
       `;
       paginationEl.style.display = 'none';

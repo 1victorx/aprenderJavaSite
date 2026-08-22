@@ -36,6 +36,10 @@ export class Router {
   }
 
   navigate(path) {
+    if (window.exerciseDraftGuard?.shouldBlock(path)) {
+      const confirmed = window.confirm('Você tem alterações no exercício. Deseja sair sem terminar?');
+      if (!confirmed) return false;
+    }
     this.navigationVersion += 1;
     window.location.hash = path;
     // resolve will be called by hashchange listener

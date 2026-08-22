@@ -1,5 +1,6 @@
 // Login Page
 import { AuthForm } from '../components/AuthForm.js';
+import { ApiStatus } from '../../../shared/components/ApiStatus.js';
 
 export const LoginPage = {
   render() {
@@ -12,6 +13,7 @@ export const LoginPage = {
             <p class="auth-subtitle">Continue sua jornada Java</p>
           </div>
           ${AuthForm.render('login')}
+          ${ApiStatus.render()}
           <div class="auth-footer">
             Não tem conta? <a href="/register" data-link>Cadastrar</a>
           </div>
@@ -22,5 +24,6 @@ export const LoginPage = {
 
   afterRender() {
     AuthForm.bindEvents('login');
+    ApiStatus.bind();
   }
 };

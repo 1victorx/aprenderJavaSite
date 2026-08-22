@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.HashSet;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,12 +44,18 @@ public class ExerciseService {
         this.userRepository = userRepository;
     }
 
-    public Page<ExerciseDTO> findAll(Pageable pageable) {
-        return exerciseRepository.findAllOrdered(pageable).map(this::toDTO);
-    }
-
-    public Page<ExerciseDTO> findByCategory(ExerciseCategory category, Pageable pageable) {
-        return exerciseRepository.findByCategory(category, pageable).map(this::toDTO);
+    public Page<ExerciseDTO> search(String query, ExerciseCategory category, Difficulty difficulty,
+                                    String status, Long userId, Pageable pageable) {
+        String normalizedQuery = query == null || query.isBlank() ? null : query.trim();
+        String normalizedStatus = status == null || status.isBlank() ? "all" : status.toLowerCase();
+        Long effectiveUserId = userId == null ? -1L : userId;
+        Page<Exercise> exercises = exerciseRepository.search(
+            normalizedQuery, category, difficulty, normalizedStatus, effectiveUserId, pageable
+        );
+        Set<Long> solvedIds = userId == null
+            ? Set.of()
+            : new HashSet<>(exerciseRepository.findSolvedExerciseIds(userId));
+        return exercises.map(exercise -> toDTO(exercise, solvedIds.contains(exercise.getId())));
     }
 
     public ExerciseDTO findById(Long id) {
@@ -64,7 +71,13 @@ public class ExerciseService {
     }
 
     private ExerciseDTO toDTO(Exercise exercise) {
-        return exerciseMapper.toDTO(exercise);
+        return toDTO(exercise, false);
+    }
+
+    private ExerciseDTO toDTO(Exercise exercise, boolean solved) {
+        ExerciseDTO dto = exerciseMapper.toDTO(exercise);
+        dto.setSolved(solved);
+        return dto;
     }
 
     @Transactional

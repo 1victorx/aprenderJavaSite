@@ -98,7 +98,7 @@ export const DashboardPage = {
         icon: '🎖️', 
         value: d.achievements?.filter(a => a.unlocked).length || 0, 
         label: 'Conquistas', 
-        sublabel: `de ${d.achievements?.length || 12} total`,
+        sublabel: `de ${d.achievements?.length ?? 0} total`,
         iconClass: 'achievement'
       })}
     `;
@@ -121,7 +121,8 @@ export const DashboardPage = {
       document.getElementById('next-exercise-content').innerHTML = `
         <div class="empty-state" style="padding: var(--space-4);">
           <div class="empty-state-icon">🎉</div>
-          <p>Todos os exercícios disponíveis foram resolvidos! Novos exercícios em breve.</p>
+          <p>Você concluiu o catálogo atual. Continue revisando seu histórico ou volte aos exercícios para praticar.</p>
+          <a href="/exercises" data-link class="btn btn-secondary">Revisar exercícios</a>
         </div>
       `;
     }
@@ -140,7 +141,8 @@ export const DashboardPage = {
     } else {
       achievementsGrid.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1; padding: var(--space-4);">
-          <p>Resolva exercícios para desbloquear conquistas!</p>
+          <p>Resolva exercícios para desbloquear conquistas.</p>
+          <a href="/exercises" data-link class="btn btn-secondary">Ver exercícios</a>
         </div>
       `;
     }

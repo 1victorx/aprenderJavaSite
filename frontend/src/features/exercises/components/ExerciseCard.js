@@ -4,8 +4,6 @@ export const ExerciseCard = {
     const difficultyClass = exercise.difficulty?.toLowerCase() || 'easy';
     const categoryClass = exercise.category?.toLowerCase().replace('_', '-') || 'algorithms';
     
-    const stars = '★'.repeat(exercise.attempts?.passed || 0) + '☆'.repeat(5 - (exercise.attempts?.passed || 0));
-    
     return `
       <article class="exercise-item" role="listitem">
         <span class="exercise-number">${number}</span>
@@ -18,7 +16,7 @@ export const ExerciseCard = {
             <span class="badge badge-status ${exercise.solved ? 'passed' : 'pending'}" aria-label="${exercise.solved ? 'Resolvido' : 'Não resolvido'}">
               ${exercise.solved ? '✓' : '○'} ${exercise.solved ? 'Resolvido' : 'Pendente'}
             </span>
-            <span style="color: var(--color-text-muted); font-size: var(--font-size-xs);">XP: ${exercise.xpReward || 10}</span>
+            ${exercise.xpReward != null ? `<span style="color: var(--color-text-muted); font-size: var(--font-size-xs);">XP: ${exercise.xpReward}</span>` : ''}
           </div>
         </div>
         <div class="exercise-item-actions">

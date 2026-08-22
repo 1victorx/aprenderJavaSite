@@ -7,6 +7,7 @@ import { DashboardPage } from '../features/gamification/pages/DashboardPage.js';
 import { HistoryPage } from '../features/gamification/pages/HistoryPage.js';
 import { AchievementsPage } from '../features/gamification/pages/AchievementsPage.js';
 import { LayoutPage } from '../features/layout/pages/LayoutPage.js';
+import { ErrorState } from '../shared/components/ErrorState.js';
 
 export function setupRoutes(router) {
   // Page map for afterRender callbacks
@@ -28,7 +29,6 @@ export function setupRoutes(router) {
   router
     .add('/login', () => LoginPage.render(), { public: true })
     .add('/register', () => RegisterPage.render(), { public: true })
-    .add('/forgot-password', () => '<div class="auth-page"><div class="auth-card"><h1>Em breve</h1><p>Recuperação de senha será implementada.</p><a href="/login" data-link>Voltar</a></div></div>', { public: true });
 
   // Protected routes (require authentication)
   router
@@ -41,13 +41,7 @@ export function setupRoutes(router) {
 
   // 404
   router.notFound(() => `
-    <div class="auth-page">
-      <div class="auth-card" style="text-align: center;">
-        <h1>404</h1>
-        <p style="margin: var(--space-4) 0; color: var(--color-text-secondary);">Página não encontrada</p>
-        <a href="/" data-link class="btn btn-primary">Ir para o início</a>
-      </div>
-    </div>
+    ${ErrorState.render({ title: 'Página não encontrada', message: 'Esse caminho não existe ou foi removido.' })}
   `);
 
   return router;

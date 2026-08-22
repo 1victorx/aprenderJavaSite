@@ -6,6 +6,8 @@ server:
 spring:
   application:
     name: javastudy
+  profiles:
+    default: local
   
   datasource:
     url: jdbc:h2:file:./data/javastudy;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
@@ -54,6 +56,10 @@ ratelimit:
   login:
     requests: 5
     duration-minutes: 1
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173,https://1victorx.github.io}
   execute:
     requests: 30
     duration-minutes: 1

@@ -17,6 +17,7 @@ public class ExerciseDTO {
     private String starterCode;
     private Integer xpReward;
     private Integer order;
+    private Boolean solved;
     private List<TestCaseDTO> visibleTestCases;
 
     @Data

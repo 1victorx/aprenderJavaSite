@@ -68,13 +68,10 @@ export const AchievementsPage = {
     // Stats
     const unlocked = this.data.achievements.filter(a => a.unlocked).length;
     const total = this.data.achievements.length;
-    const xpFromAchievements = unlocked * 50; // Estimativa
-
     document.getElementById('achievement-stats').innerHTML = `
       ${StatsCard.render({ icon: '🎖️', value: unlocked, label: 'Desbloqueadas', sublabel: `de ${total} total`, iconClass: 'achievement' })}
       ${StatsCard.render({ icon: '🔒', value: total - unlocked, label: 'Bloqueadas', sublabel: 'Continue praticando', iconClass: 'locked' })}
       ${StatsCard.render({ icon: '📊', value: `${total ? Math.round((unlocked/total)*100) : 0}%`, label: 'Progresso', sublabel: 'Conquistas completadas', iconClass: 'progress' })}
-      ${StatsCard.render({ icon: '⭐', value: xpFromAchievements, label: 'XP de Conquistas', sublabel: 'Estimado', iconClass: 'xp' })}
     `;
 
     // Grid

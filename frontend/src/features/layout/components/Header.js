@@ -1,4 +1,5 @@
 // Header Component
+import { ApiStatus } from '../../../shared/components/ApiStatus.js';
 export const Header = {
   render() {
     const user = window.authStore?.currentUser;
@@ -16,6 +17,7 @@ export const Header = {
         <a href="/" data-link class="auth-logo" aria-label="JavaStudy - Início">JavaStudy</a>
       </div>
       <div class="header-right" style="display: flex; align-items: center; gap: var(--space-4);">
+        ${ApiStatus.render(true)}
         <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
           <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="display: none;">
             <circle cx="12" cy="12" r="5"></circle>
@@ -99,6 +101,7 @@ export const Header = {
 
   bindEvents() {
     // Theme toggle
+    ApiStatus.bind();
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
       themeToggle.addEventListener('click', () => window.theme?.toggle());

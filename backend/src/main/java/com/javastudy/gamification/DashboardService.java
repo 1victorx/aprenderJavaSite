@@ -1,6 +1,7 @@
 package com.javastudy.gamification;
 
 import com.javastudy.gamification.dto.DashboardDTO;
+import com.javastudy.gamification.dto.AttemptHistoryDTO;
 import com.javastudy.exercise.Exercise;
 import com.javastudy.exercise.ExerciseRepository;
 import com.javastudy.exercise.mapper.ExerciseMapper;
@@ -62,6 +63,14 @@ public class DashboardService {
             return attemptHistoryRepository.findByUserIdOrderByCreatedAtDesc(user.getId(), pageable);
         }
         return attemptHistoryRepository.findByUserIdAndPassedOrderByCreatedAtDesc(user.getId(), passed, pageable);
+    }
+
+    public List<AttemptHistoryDTO> getExerciseHistory(User user, Long exerciseId) {
+        return attemptHistoryRepository.findByUserIdAndExerciseId(user.getId(), exerciseId).stream()
+            .sorted((left, right) -> right.getCreatedAt().compareTo(left.getCreatedAt()))
+            .limit(8)
+            .map(AttemptHistoryDTO::from)
+            .toList();
     }
 
     private List<DashboardDTO.StreakDayDTO> buildStreakCalendar(UserProgress progress) {

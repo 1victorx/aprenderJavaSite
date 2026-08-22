@@ -79,7 +79,8 @@ export const HistoryPage = {
       tableEl.innerHTML = `
         <div class="empty-state">
           <div class="empty-state-icon">📜</div>
-          <p>Seu histórico aparecerá aqui após resolver exercícios.</p>
+          <p>Seu histórico aparecerá aqui após executar um exercício.</p>
+          <a href="/exercises" data-link class="btn btn-secondary">Encontrar um exercício</a>
         </div>
       `;
       paginationEl.style.display = 'none';
