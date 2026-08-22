@@ -12,4 +12,6 @@ public class LoginRequest {
 
     @NotBlank(message = "Senha é obrigatória")
     private String password;
+
+    private boolean rememberMe;
 }

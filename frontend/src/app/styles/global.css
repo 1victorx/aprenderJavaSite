@@ -1103,6 +1103,8 @@ body {
 }
 
 .btn {
+  position: relative;
+  overflow: hidden;
   min-height: 44px;
   border: 1px solid transparent;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
@@ -1425,11 +1427,14 @@ select {
   border: 2px solid transparent;
   border-radius: 14px;
   font-weight: 800;
-  transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
 }
 
-.btn:hover:not(:disabled) { transform: translateY(-2px); }
-.btn:active:not(:disabled) { transform: translateY(2px); }
+.btn > * { position: relative; z-index: 1; }
+.btn::after { position: absolute; inset: 0 auto 0 -65%; width: 42%; content: ''; background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.28), transparent); transform: skewX(-18deg); pointer-events: none; }
+.btn:hover:not(:disabled) { transform: translateY(-3px); filter: saturate(1.08); }
+.btn:hover:not(:disabled)::after { animation: buttonSheen 650ms ease-out; }
+.btn:active:not(:disabled) { transform: translateY(1px) scale(0.98); }
 
 .btn-primary {
   color: var(--color-text-on-primary);
@@ -1470,6 +1475,31 @@ select {
   border-color: var(--color-border-focus);
   box-shadow: 0 0 0 4px var(--color-warning-soft);
   outline: none;
+}
+
+.remember-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.remember-option input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.remember-option:focus-within { color: var(--color-text-primary); }
+
+@keyframes buttonSheen {
+  from { transform: translateX(0) skewX(-18deg); }
+  to { transform: translateX(360%) skewX(-18deg); }
 }
 
 .form-label { color: var(--color-text-primary); font-weight: 800; }
@@ -1735,5 +1765,6 @@ select {
 
 @media (prefers-reduced-motion: reduce) {
   .board-cursor { animation: none; }
+  .btn:hover:not(:disabled)::after { animation: none; }
   .btn:hover:not(:disabled), .card:hover, .exercise-item:hover, .achievement-card:hover, .nav-item:hover { transform: none; }
 }

@@ -38,13 +38,14 @@ public class JwtService {
             .compact();
     }
 
-    public String generateRefreshToken(String email) {
+    public String generateRefreshToken(String email, boolean rememberMe) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + properties.getRefreshExpiration());
 
         return Jwts.builder()
             .subject(email)
             .claim("type", "refresh")
+            .claim("rememberMe", rememberMe)
             .issuedAt(now)
             .expiration(expiry)
             .signWith(key)
@@ -82,5 +83,10 @@ public class JwtService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public boolean extractRememberMe(String token) {
+        Object rememberMe = parseToken(token).getPayload().get("rememberMe");
+        return Boolean.TRUE.equals(rememberMe);
     }
 }

@@ -26,14 +26,14 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
         AuthResponse authResponse = authService.register(request);
-        addTokenCookies(response, authResponse);
+        addTokenCookies(response, authResponse, request.isRememberMe());
         return ResponseEntity.ok(authResponse);
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         AuthResponse authResponse = authService.login(request);
-        addTokenCookies(response, authResponse);
+        addTokenCookies(response, authResponse, request.isRememberMe());
         return ResponseEntity.ok(authResponse);
     }
 
@@ -46,7 +46,7 @@ public class AuthController {
             return ResponseEntity.status(401).build();
         }
         AuthResponse authResponse = authService.refreshToken(refreshToken);
-        addTokenCookies(response, authResponse);
+        addTokenCookies(response, authResponse, jwtService.extractRememberMe(refreshToken));
         return ResponseEntity.ok(authResponse);
     }
 
@@ -64,12 +64,12 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse.UserDto(user));
     }
 
-    private void addTokenCookies(HttpServletResponse response, AuthResponse authResponse) {
+    private void addTokenCookies(HttpServletResponse response, AuthResponse authResponse, boolean rememberMe) {
         Cookie accessCookie = new Cookie("access_token", authResponse.getAccessToken());
         accessCookie.setHttpOnly(true);
         accessCookie.setSecure(false); // true em produção com HTTPS
         accessCookie.setPath("/");
-        accessCookie.setMaxAge(30 * 24 * 60 * 60); // 30 dias
+        accessCookie.setMaxAge(rememberMe ? 30 * 24 * 60 * 60 : -1);
         accessCookie.setAttribute("SameSite", "Lax");
         response.addCookie(accessCookie);
 
@@ -77,7 +77,7 @@ public class AuthController {
         refreshCookie.setHttpOnly(true);
         refreshCookie.setSecure(false);
         refreshCookie.setPath("/api/auth/refresh");
-        refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 7 dias
+        refreshCookie.setMaxAge(rememberMe ? 7 * 24 * 60 * 60 : -1);
         refreshCookie.setAttribute("SameSite", "Lax");
         response.addCookie(refreshCookie);
     }

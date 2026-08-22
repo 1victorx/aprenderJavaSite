@@ -28,6 +28,10 @@ export const AuthForm = {
             <span class="form-error" id="confirmPassword-error" aria-live="polite"></span>
           </div>
         ` : ''}
+        <label class="remember-option" for="rememberMe">
+          <input type="checkbox" id="rememberMe" name="rememberMe" checked>
+          <span>Lembrar-me neste dispositivo</span>
+        </label>
         <button type="submit" class="btn btn-primary btn-full btn-lg" id="submit-btn">
           <span class="btn-text">${isLogin ? 'Entrar' : 'Cadastrar'}</span>
           <span class="btn-loading spinner" style="display: none;" aria-hidden="true"></span>
@@ -61,11 +65,12 @@ export const AuthForm = {
 
       this.setLoading(submitBtn, btnText, btnLoading, true);
       try {
+        const rememberMe = Boolean(form.elements.rememberMe?.checked);
         if (isLogin) {
-          await window.authStore.login(data.email, data.password);
+          await window.authStore.login(data.email, data.password, rememberMe);
           window.toast?.success('Login realizado com sucesso!');
         } else {
-          await window.authStore.register(data.name, data.email, data.password);
+          await window.authStore.register(data.name, data.email, data.password, rememberMe);
           window.toast?.success('Conta criada com sucesso!');
         }
         window.router?.navigate('/dashboard');

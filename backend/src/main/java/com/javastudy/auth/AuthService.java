@@ -43,7 +43,7 @@ public class AuthService {
         user = userRepository.save(user);
 
         String accessToken = jwtService.generateToken(user.getEmail(), user.getId());
-        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail(), request.isRememberMe());
 
         return new AuthResponse(accessToken, refreshToken, user);
     }
@@ -55,7 +55,7 @@ public class AuthService {
 
         User user = (User) authentication.getPrincipal();
         String accessToken = jwtService.generateToken(user.getEmail(), user.getId());
-        String refreshToken = jwtService.generateRefreshToken(user.getEmail());
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail(), request.isRememberMe());
 
         return new AuthResponse(accessToken, refreshToken, user);
     }
@@ -70,7 +70,7 @@ public class AuthService {
             .orElseThrow(() -> ApiException.unauthorized("Usuário não encontrado"));
 
         String newAccessToken = jwtService.generateToken(user.getEmail(), user.getId());
-        String newRefreshToken = jwtService.generateRefreshToken(user.getEmail());
+        String newRefreshToken = jwtService.generateRefreshToken(user.getEmail(), jwtService.extractRememberMe(refreshToken));
 
         return new AuthResponse(newAccessToken, newRefreshToken, user);
     }

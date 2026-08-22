@@ -55,14 +55,14 @@ export class AuthStore {
     this.clearSession();
   }
 
-  async login(email, password) {
-    const data = await window.apiClient.post('/api/auth/login', { email, password });
+  async login(email, password, rememberMe = false) {
+    const data = await window.apiClient.post('/api/auth/login', { email, password, rememberMe });
     this.setTokens(data.accessToken, data.refreshToken, data.user);
     return data;
   }
 
-  async register(name, email, password) {
-    const data = await window.apiClient.post('/api/auth/register', { name, email, password });
+  async register(name, email, password, rememberMe = false) {
+    const data = await window.apiClient.post('/api/auth/register', { name, email, password, rememberMe });
     this.setTokens(data.accessToken, data.refreshToken, data.user);
     return data;
   }
