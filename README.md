@@ -52,14 +52,24 @@ Frontend roda em `http://localhost:5173`
 
 Se o cadastro mostrar “Não foi possível conectar”, confirme primeiro que o backend está em execução na porta `8080`. O frontend encaminha `/api` para esse backend durante o desenvolvimento.
 
-### Com Docker Compose (Produção)
+### Com Docker Compose (ambiente local)
 ```bash
 cd docker
-docker-compose up -d --build
+export JWT_SECRET="gere-uma-chave-secreta-com-pelo-menos-32-caracteres"
+docker compose up -d --build
 ```
+
+No PowerShell do Windows, use:
+
+```powershell
+cd docker
+$env:JWT_SECRET = "gere-uma-chave-secreta-com-pelo-menos-32-caracteres"
+docker compose up -d --build
+```
+
 - Frontend: `http://localhost`
 - Backend: `http://localhost:8080/api`
-- H2 Console: `http://localhost:8080/api/h2-console`
+- O console H2 fica desativado no perfil Docker por segurança.
 
 ## Estrutura do Projeto
 
