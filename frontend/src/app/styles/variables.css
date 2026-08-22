@@ -241,6 +241,15 @@ body {
   --color-error: #d85d48;
   --color-error-soft: rgba(216, 93, 72, 0.14);
 
+  --color-hero-bg: #24352e;
+  --color-hero-text: #ffffff;
+  --color-hero-muted: rgba(255, 255, 255, 0.75);
+  --color-showcase-bg: #24352e;
+  --color-showcase-register-bg: #4f8f18;
+  --color-showcase-text: #ffffff;
+  --color-showcase-muted: rgba(255, 255, 255, 0.78);
+  --color-on-accent: #17320d;
+
   --color-cat-algorithms: #4f8f18;
   --color-cat-oo-patterns: #9a63bf;
   --color-cat-java-core: #d9861f;
@@ -288,6 +297,14 @@ body {
   --color-warning-soft: rgba(242, 168, 59, 0.18);
   --color-error: #f18168;
   --color-error-soft: rgba(241, 129, 104, 0.18);
+  --color-hero-bg: #0d1712;
+  --color-hero-text: #f7f8ee;
+  --color-hero-muted: rgba(247, 248, 238, 0.76);
+  --color-showcase-bg: #0d1712;
+  --color-showcase-register-bg: #234b15;
+  --color-showcase-text: #f7f8ee;
+  --color-showcase-muted: rgba(247, 248, 238, 0.78);
+  --color-on-accent: #152015;
   --shadow-sm: 0 3px 0 rgba(0, 0, 0, 0.22);
   --shadow-md: 0 6px 0 rgba(0, 0, 0, 0.2), 0 18px 34px rgba(0, 0, 0, 0.2);
   --shadow-lg: 0 12px 0 rgba(0, 0, 0, 0.22), 0 30px 70px rgba(0, 0, 0, 0.3);
