@@ -57,8 +57,11 @@ public class DashboardService {
         return dto;
     }
 
-    public Page<AttemptHistory> getHistory(User user, Pageable pageable) {
-        return attemptHistoryRepository.findByUserIdOrderByCreatedAtDesc(user.getId(), pageable);
+    public Page<AttemptHistory> getHistory(User user, Boolean passed, Pageable pageable) {
+        if (passed == null) {
+            return attemptHistoryRepository.findByUserIdOrderByCreatedAtDesc(user.getId(), pageable);
+        }
+        return attemptHistoryRepository.findByUserIdAndPassedOrderByCreatedAtDesc(user.getId(), passed, pageable);
     }
 
     private List<DashboardDTO.StreakDayDTO> buildStreakCalendar(UserProgress progress) {

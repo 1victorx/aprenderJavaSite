@@ -26,8 +26,9 @@ public class GamificationController {
     @GetMapping("/history")
     public ResponseEntity<Page<AttemptHistory>> getHistory(
             @AuthenticationPrincipal User user,
+            @RequestParam(name = "passed", required = false) Boolean passed,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        return ResponseEntity.ok(dashboardService.getHistory(user, pageable));
+        return ResponseEntity.ok(dashboardService.getHistory(user, passed, pageable));
     }
 }

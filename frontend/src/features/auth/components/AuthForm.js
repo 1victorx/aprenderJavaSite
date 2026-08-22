@@ -25,8 +25,8 @@ export const AuthForm = {
         ${!isLogin ? `
           <div class="form-group">
             <label for="confirmPassword" class="form-label">Confirmar Senha</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" autocomplete="new-password" required aria-describedby="confirm-error">
-            <span class="form-error" id="confirm-error" aria-live="polite"></span>
+            <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" autocomplete="new-password" required aria-describedby="confirmPassword-error">
+            <span class="form-error" id="confirmPassword-error" aria-live="polite"></span>
           </div>
         ` : ''}
         <div class="form-group" style="flex-direction: row; align-items: center; justify-content: space-between;">
@@ -34,7 +34,7 @@ export const AuthForm = {
             <input type="checkbox" id="remember" name="remember" style="width: auto;">
             <span>Lembrar-me</span>
           </label>
-          ${isLogin ? `<a href="/forgot-password" style="font-size: var(--font-size-sm);">Esqueci a senha</a>` : ''}
+          ${isLogin ? `<a href="/forgot-password" data-link style="font-size: var(--font-size-sm);">Esqueci a senha</a>` : ''}
         </div>
         <button type="submit" class="btn btn-primary btn-full btn-lg" id="submit-btn">
           <span class="btn-text">${isLogin ? 'Entrar' : 'Cadastrar'}</span>

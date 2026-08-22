@@ -48,6 +48,14 @@ export class Router {
   resolve(path) {
     const pathname = path.split('?')[0];
     const search = path.split('?')[1] || '';
+
+    // Keep the old `/main` entry point usable for bookmarks from earlier
+    // versions of the app. The canonical authenticated landing page is now
+    // the dashboard.
+    if (pathname === '/main') {
+      this.navigate('/dashboard');
+      return;
+    }
     
     const { route, params } = this.match(pathname);
     

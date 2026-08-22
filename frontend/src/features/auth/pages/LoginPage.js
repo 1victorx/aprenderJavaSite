@@ -5,7 +5,7 @@ export const LoginPage = {
   render() {
     return `
       <div class="auth-page">
-        <div class="auth-card" role="main">
+        <div class="auth-card">
           <div class="auth-header">
             <div class="auth-logo">JavaStudy</div>
             <h1 class="auth-title">Bem-vindo de volta</h1>

@@ -1,3 +1,4 @@
+import './styles/global.css';
 import { Router } from './router.js';
 import { AuthStore } from '../features/auth/services/authStore.js';
 import { ApiClient } from '../shared/utils/apiClient.js';
@@ -31,7 +32,9 @@ if (!app) {
 
 function getCurrentPath() {
   const hash = window.location.hash;
-  if (hash.startsWith('#')) {
+  // The router owns hashes beginning with `#/`. Plain hashes are in-page
+  // anchors such as the accessible skip link and must not become routes.
+  if (hash.startsWith('#/')) {
     return hash.slice(1) || '/';
   }
   return window.location.pathname + window.location.search || '/';
@@ -64,7 +67,6 @@ function renderLayout() {
           ${route.component ? route.component() : ''}
         </main>
       </div>
-      <div class="toast-container" id="toast-container" aria-live="polite" aria-label="Notificações"></div>
     `;
 
     Header.bindEvents();
@@ -103,7 +105,7 @@ window.addEventListener('popstate', () => {
 });
 
 document.addEventListener('click', (event) => {
-  const link = event.target.closest('a[data-link]');
+  const link = event.target.closest('[data-link][href]');
   if (!link) return;
 
   event.preventDefault();

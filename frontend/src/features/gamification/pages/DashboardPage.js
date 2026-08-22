@@ -18,12 +18,6 @@ export const DashboardPage = {
           <div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-state-icon">⏳</div><p>Carregando...</p></div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr; gap: var(--space-6); margin-top: var(--space-8);">
-          @media (min-width: 768px) {
-            grid-template-columns: 1fr 1fr;
-          }
-        </div>
-
         <section id="next-exercise" class="card" style="margin-top: var(--space-6);">
           <div class="card-header">
             <h2 class="card-title">Próximo Exercício Recomendado</h2>

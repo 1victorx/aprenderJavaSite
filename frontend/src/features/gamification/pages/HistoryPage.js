@@ -52,6 +52,8 @@ export const HistoryPage = {
         page: this.currentPage,
         size: this.pageSize
       });
+      if (this.currentFilter === 'passed') params.set('passed', 'true');
+      if (this.currentFilter === 'failed') params.set('passed', 'false');
 
       const data = await window.apiClient.get(`/api/gamification/history?${params}`);
       if (window.router?.getCurrentRoute()?.path !== '/history') return;
@@ -160,3 +162,5 @@ export const HistoryPage = {
     return div.innerHTML;
   }
 };
+
+window.historyPage = HistoryPage;

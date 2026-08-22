@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface AttemptHistoryRepository extends JpaRepository<AttemptHistory, Long> {
     Page<AttemptHistory> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
+    Page<AttemptHistory> findByUserIdAndPassedOrderByCreatedAtDesc(Long userId, Boolean passed, Pageable pageable);
     List<AttemptHistory> findByUserIdAndExerciseId(Long userId, Long exerciseId);
 }

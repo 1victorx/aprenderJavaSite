@@ -1,3 +1,5 @@
+@import './variables.css';
+
 /* Global Styles & Component Base */
 
 /* Layout */
@@ -34,7 +36,8 @@
 .app-main {
   padding: var(--space-8);
   overflow-y: auto;
-  max-width: calc(100% - var(--sidebar-width));
+  max-width: none;
+  min-width: 0;
 }
 
 @media (max-width: 768px) {
@@ -574,16 +577,17 @@ pre code {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-6);
+  padding: clamp(var(--space-6), 6vw, var(--space-12));
 }
 
 .auth-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 440px;
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  padding: var(--space-8);
+  padding: clamp(var(--space-6), 5vw, var(--space-10));
+  box-shadow: var(--shadow-lg);
 }
 
 .auth-header {
@@ -592,10 +596,14 @@ pre code {
 }
 
 .auth-logo {
-  font-size: var(--font-size-3xl);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-primary);
   margin-bottom: var(--space-2);
+  letter-spacing: -0.03em;
 }
 
 .auth-title {
@@ -611,6 +619,10 @@ pre code {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+.auth-form .form-group:has(input[type="checkbox"]) {
+  margin-top: var(--space-1);
 }
 
 .auth-footer {
@@ -1035,6 +1047,153 @@ pre code {
 
 .user-menu-item:hover {
   background: var(--color-bg-hover);
+}
+
+/* Product surface refinements based on OpenDesign's Agentic reference:
+   layered command surfaces, a single blue action signal, 8pt rhythm and
+   explicit interaction states. */
+body {
+  letter-spacing: -0.005em;
+}
+
+.app-layout {
+  background: var(--color-bg-primary);
+}
+
+.app-header {
+  background: var(--color-bg-secondary);
+  box-shadow: 0 1px 0 var(--color-border);
+}
+
+.app-sidebar {
+  padding: var(--space-8) var(--space-4);
+}
+
+.app-main > * {
+  width: min(100%, var(--container-max));
+  margin-inline: auto;
+}
+
+.dashboard-page > header,
+.exercises-page > .exercises-header,
+.achievements-page > header,
+.history-page > header {
+  max-width: 760px;
+}
+
+.dashboard-page h1,
+.exercises-page h1,
+.achievements-page h1,
+.history-page h1 {
+  letter-spacing: -0.035em;
+}
+
+.card,
+.stat-card,
+.exercise-item,
+.achievement-card,
+.streak-calendar {
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover,
+.exercise-item:hover,
+.achievement-card:hover {
+  transform: translateY(-1px);
+}
+
+.btn {
+  min-height: 44px;
+  border: 1px solid transparent;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-primary {
+  box-shadow: 0 5px 14px rgba(96, 165, 250, 0.18);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(96, 165, 250, 0.22);
+}
+
+.form-input {
+  min-height: 46px;
+}
+
+.form-input:focus,
+.btn:focus-visible,
+.theme-toggle:focus-visible,
+.user-menu-btn:focus-visible,
+.nav-item:focus-visible,
+.tab:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
+}
+
+.exercise-item {
+  padding: var(--space-5);
+}
+
+.exercise-number {
+  font-family: var(--font-family-mono);
+  color: var(--color-primary);
+}
+
+.stat-card {
+  background: var(--color-bg-secondary);
+}
+
+.stat-value {
+  letter-spacing: -0.035em;
+}
+
+.user-menu-item {
+  text-decoration: none;
+}
+
+.user-menu-item:hover {
+  text-decoration: none;
+}
+
+.theme-toggle {
+  border-radius: var(--radius-md);
+}
+
+.mobile-menu-btn {
+  border-radius: var(--radius-md);
+}
+
+.exercise-console {
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding-inline: var(--space-4);
+  }
+
+  .app-sidebar {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .exercises-filters,
+  .exercises-filters .form-input {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .exercise-item {
+    grid-template-columns: auto 1fr;
+  }
+
+  .exercise-item-actions {
+    grid-column: 1 / -1;
+  }
+
+  .exercise-item-actions .btn {
+    width: 100%;
+  }
 }
 
 .user-menu-divider {

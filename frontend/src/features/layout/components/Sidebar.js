@@ -12,13 +12,17 @@ export const Sidebar = {
 
     return `
       <nav class="sidebar-nav" aria-label="Navegação principal">
-        ${navItems.map(item => `
-          <a href="${item.href}" data-link class="nav-item ${currentPath === item.href ? 'active' : ''}" 
-             aria-current="${currentPath === item.href ? 'page' : 'false'}">
+        ${navItems.map(item => {
+          const isActive = item.href === '/exercises'
+            ? currentPath === '/exercises' || currentPath === '/exercises/:slug'
+            : currentPath === item.href;
+          return `
+          <a href="${item.href}" data-link class="nav-item ${isActive ? 'active' : ''}"
+             ${isActive ? 'aria-current="page"' : ''}>
             ${this.getIcon(item.icon)}
             <span>${item.label}</span>
           </a>
-        `).join('')}
+        `; }).join('')}
       </nav>
     `;
   },

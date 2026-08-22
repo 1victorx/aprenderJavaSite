@@ -304,7 +304,9 @@ export const ExerciseDetailPage = {
 
   renderMarkdown(text) {
     if (!text) return '';
-    return text
+    // Exercise content is stored data; escape it before applying the small
+    // supported markdown subset so descriptions cannot inject HTML.
+    return this.escapeHtml(text)
       .replace(/^### (.*$)/gim, '<h3>$1</h3>')
       .replace(/^## (.*$)/gim, '<h2>$1</h2>')
       .replace(/^# (.*$)/gim, '<h1>$1</h1>')

@@ -91,7 +91,13 @@ export const ExercisesPage = {
       if (generation !== this.loadGeneration ||
           window.router?.getNavigationVersion() !== navigationVersion ||
           window.router?.getCurrentRoute()?.path !== '/exercises') return;
-      this.renderExercises(data.content, data.totalPages, data.totalElements);
+      const exercises = this.searchQuery
+        ? data.content.filter(exercise => {
+            const query = this.searchQuery.toLocaleLowerCase('pt-BR');
+            return `${exercise.title} ${exercise.description}`.toLocaleLowerCase('pt-BR').includes(query);
+          })
+        : data.content;
+      this.renderExercises(exercises, exercises.length ? data.totalPages : 0, exercises.length);
     } catch (error) {
       if (generation !== this.loadGeneration ||
           window.router?.getNavigationVersion() !== navigationVersion ||
