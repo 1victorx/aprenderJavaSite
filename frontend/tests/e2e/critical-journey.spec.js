@@ -14,6 +14,10 @@ test('cadastro, login, catálogo, execução e logout', async ({ page }) => {
   await expect(page).toHaveURL(/#\/dashboard/);
   await expect(page.getByRole('heading', { name: /Olá,/ })).toBeVisible();
 
+  await page.reload();
+  await expect(page).toHaveURL(/#\/dashboard/);
+  await expect(page.getByRole('heading', { name: /Olá,/ })).toBeVisible();
+
   await page.getByRole('link', { name: 'Exercícios' }).first().click();
   await expect(page).toHaveURL(/#\/exercises$/);
   await expect(page.locator('.exercise-item').first()).toBeVisible();

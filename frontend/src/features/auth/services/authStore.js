@@ -42,13 +42,17 @@ export class AuthStore {
     this.notify();
   }
 
-  logout() {
-    window.apiClient?.post('/api/auth/logout', {}).catch(() => {});
+  clearSession() {
     this.user = null;
     this.accessToken = null;
     this.refreshToken = null;
     window.apiClient?.clearToken();
     this.notify();
+  }
+
+  logout() {
+    window.apiClient?.post('/api/auth/logout', {}).catch(() => {});
+    this.clearSession();
   }
 
   async login(email, password) {
@@ -64,13 +68,20 @@ export class AuthStore {
   }
 
   async refresh() {
+    const data = await window.apiClient.post('/api/auth/refresh', {});
+    this.setTokens(data.accessToken, data.refreshToken, data.user);
+    return data;
+  }
+
+  async restoreSession() {
     try {
-      const data = await window.apiClient.post('/api/auth/refresh', {});
-      this.setTokens(data.accessToken, data.refreshToken, data.user);
-      return data;
-    } catch (e) {
-      this.logout();
-      throw e;
+      // The backend keeps the refresh token in an HttpOnly cookie. Rehydrate
+      // the in-memory access token before the router protects the current URL.
+      await this.refresh();
+      return true;
+    } catch {
+      this.clearSession();
+      return false;
     }
   }
 

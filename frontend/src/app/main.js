@@ -136,13 +136,7 @@ document.addEventListener('click', (event) => {
 });
 
 async function bootstrap() {
-  if (authStore.isAuthenticated) {
-    try {
-      await authStore.fetchMe();
-    } catch {
-      authStore.logout();
-    }
-  }
+  await authStore.restoreSession();
   handleNavigation(getCurrentPath());
 }
 
