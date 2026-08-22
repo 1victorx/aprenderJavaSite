@@ -38,7 +38,16 @@ function getCurrentPath() {
   if (hash.startsWith('#/')) {
     return hash.slice(1) || '/';
   }
-  return window.location.pathname + window.location.search || '/';
+
+  // GitHub Pages serves the SPA below `/aprenderJavaSite/`. Normalize the
+  // deployment prefix so opening the public root still resolves to `/`.
+  const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  let pathname = window.location.pathname;
+  if (basePath && basePath !== '/' && pathname.startsWith(basePath)) {
+    pathname = pathname.slice(basePath.length) || '/';
+  }
+
+  return `${pathname}${window.location.search}` || '/';
 }
 
 let renderGeneration = 0;
