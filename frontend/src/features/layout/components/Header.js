@@ -14,7 +14,10 @@ export const Header = {
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
         </button>
-        <a href="/" data-link class="auth-logo" aria-label="JavaStudy - Início">JavaStudy</a>
+        <a href="/" data-link class="app-brand" aria-label="JavaStudy - Início">
+          <span class="brand-mark" aria-hidden="true">{ }</span>
+          <span>JavaStudy</span>
+        </a>
       </div>
       <div class="header-right" style="display: flex; align-items: center; gap: var(--space-4);">
         ${ApiStatus.render(true)}

@@ -9,27 +9,62 @@ export const DashboardPage = {
   render() {
     return `
       <div class="dashboard-page">
-        <header style="margin-bottom: var(--space-8);">
-          <h1>Dashboard</h1>
-          <p style="color: var(--color-text-secondary);">Acompanhe seu progresso e continue evoluindo</p>
+        <section class="dashboard-hero">
+          <div class="dashboard-hero-copy">
+            <span class="eyebrow">Seu espaço de prática</span>
+            <h1>Olá, <span class="hero-name">${this.escapeHtml(window.authStore?.currentUser?.name?.split(' ')[0] || 'estudante')}</span>.</h1>
+            <p>Escolha um exercício, escreva código e veja seu progresso ganhar forma.</p>
+            <div class="hero-actions">
+              <a href="/exercises" data-link class="btn btn-primary btn-lg">Começar a praticar <span aria-hidden="true">→</span></a>
+              <span class="hero-tip"><span class="tip-dot"></span> uma sessão curta já conta</span>
+            </div>
+          </div>
+          <div class="dashboard-hero-art" aria-hidden="true">
+            <div class="hero-orbit hero-orbit-one"></div>
+            <div class="hero-orbit hero-orbit-two"></div>
+            <div class="hero-code-card">
+              <span class="code-kicker">/ hoje</span>
+              <strong>public class</strong>
+              <span>JavaStudy {</span>
+              <span class="code-indent">practice();</span>
+              <span>}</span>
+              <i>✦</i>
+            </div>
+          </div>
+        </section>
+
+        <header class="dashboard-section-heading">
+          <div>
+            <span class="eyebrow">Visão geral</span>
+            <h2>Seu ritmo até aqui</h2>
+          </div>
+          <a href="/history" data-link class="text-link">Ver histórico <span aria-hidden="true">↗</span></a>
         </header>
 
         <div class="stats-grid" id="stats-grid">
           <div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-state-icon">⏳</div><p>Carregando...</p></div>
         </div>
 
-        <section id="next-exercise" class="card" style="margin-top: var(--space-6);">
+        <section id="next-exercise" class="card dashboard-next-card">
           <div class="card-header">
-            <h2 class="card-title">Próximo Exercício Recomendado</h2>
+            <div>
+              <span class="eyebrow">Próxima parada</span>
+              <h2 class="card-title">Exercício recomendado</h2>
+            </div>
+            <span class="section-number">01</span>
           </div>
           <div class="card-body" id="next-exercise-content">
             <div class="empty-state"><div class="empty-state-icon">⏳</div><p>Carregando...</p></div>
           </div>
         </section>
 
-        <section id="streak-section" class="card" style="margin-top: var(--space-6);">
+        <section id="streak-section" class="card dashboard-streak-card">
           <div class="card-header">
-            <h2 class="card-title">Calendário de Streak</h2>
+            <div>
+              <span class="eyebrow">Consistência</span>
+              <h2 class="card-title">Seu calendário de prática</h2>
+            </div>
+            <span class="streak-mark" aria-hidden="true">✦</span>
           </div>
           <div class="card-body">
             <div id="streak-calendar"></div>
@@ -41,9 +76,13 @@ export const DashboardPage = {
           </div>
         </section>
 
-        <section id="achievements-section" class="card" style="margin-top: var(--space-6);">
+        <section id="achievements-section" class="card dashboard-achievements-card">
           <div class="card-header">
-            <h2 class="card-title">Conquistas Recentes</h2>
+            <div>
+              <span class="eyebrow">Pequenas vitórias</span>
+              <h2 class="card-title">Conquistas recentes</h2>
+            </div>
+            <a href="/achievements" data-link class="text-link">Ver todas <span aria-hidden="true">↗</span></a>
           </div>
           <div class="card-body">
             <div class="achievements-grid" id="achievements-grid"></div>

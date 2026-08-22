@@ -1,7 +1,9 @@
 // Theme Manager
 export class Theme {
   constructor() {
-    this.currentTheme = 'dark';
+    // The study workspace opens in the warm light theme; dark mode remains
+    // available through the header toggle for focused evening sessions.
+    this.currentTheme = 'light';
   }
 
   init() {
@@ -10,9 +12,7 @@ export class Theme {
     if (stored) {
       this.currentTheme = stored;
     } else {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.currentTheme = prefersDark ? 'dark' : 'light';
+      this.currentTheme = 'light';
     }
     this.apply();
   }

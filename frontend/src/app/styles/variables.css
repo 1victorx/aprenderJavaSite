@@ -209,3 +209,86 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
 }
+
+/* JavaStudy visual direction: warm study desk + tactile progress cues.
+   The palette is inspired by the Duolingo fixture in open-design, while
+   keeping JavaStudy's own green, orange and ink language. */
+:root,
+[data-theme="light"] {
+  --color-bg-primary: #fffaf0;
+  --color-bg-secondary: #fffefb;
+  --color-bg-tertiary: #f1f4e8;
+  --color-bg-hover: #e8f3d8;
+
+  --color-text-primary: #24352e;
+  --color-text-secondary: #617168;
+  --color-text-muted: #87968d;
+  --color-text-on-primary: #ffffff;
+
+  --color-border: #d9e1d2;
+  --color-border-focus: #e28b27;
+
+  --color-primary: #4f8f18;
+  --color-primary-hover: #65a522;
+  --color-primary-soft: rgba(88, 204, 2, 0.14);
+  --color-accent-lime: #58cc02;
+  --color-accent-deep: #3e7d0d;
+
+  --color-success: #4f8f18;
+  --color-success-soft: rgba(88, 204, 2, 0.14);
+  --color-warning: #d9861f;
+  --color-warning-soft: rgba(255, 150, 0, 0.16);
+  --color-error: #d85d48;
+  --color-error-soft: rgba(216, 93, 72, 0.14);
+
+  --color-cat-algorithms: #4f8f18;
+  --color-cat-oo-patterns: #9a63bf;
+  --color-cat-java-core: #d9861f;
+  --color-cat-concurrency: #d85d48;
+
+  --font-family-sans: 'Nunito', 'Trebuchet MS', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-weight-normal: 500;
+  --font-weight-medium: 600;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 800;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --shadow-sm: 0 3px 0 rgba(53, 85, 36, 0.12);
+  --shadow-md: 0 6px 0 rgba(53, 85, 36, 0.12), 0 18px 34px rgba(58, 74, 46, 0.08);
+  --shadow-lg: 0 12px 0 rgba(53, 85, 36, 0.12), 0 30px 70px rgba(58, 74, 46, 0.14);
+
+  --transition-fast: 180ms cubic-bezier(0.34, 1.2, 0.64, 1);
+  --transition-normal: 260ms cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+[data-theme="dark"] {
+  --color-bg-primary: #17221d;
+  --color-bg-secondary: #203029;
+  --color-bg-tertiary: #293c31;
+  --color-bg-hover: #34503d;
+  --color-text-primary: #f7f8ee;
+  --color-text-secondary: #d0dbce;
+  --color-text-muted: #9eb09f;
+  --color-text-on-primary: #152015;
+  --color-border: #46614d;
+  --color-border-focus: #f2a83b;
+  --color-primary: #8ed34c;
+  --color-primary-hover: #a6e56a;
+  --color-primary-soft: rgba(142, 211, 76, 0.18);
+  --color-accent-lime: #8ed34c;
+  --color-accent-deep: #5a992c;
+  --color-success: #8ed34c;
+  --color-success-soft: rgba(142, 211, 76, 0.18);
+  --color-warning: #f2a83b;
+  --color-warning-soft: rgba(242, 168, 59, 0.18);
+  --color-error: #f18168;
+  --color-error-soft: rgba(241, 129, 104, 0.18);
+  --shadow-sm: 0 3px 0 rgba(0, 0, 0, 0.22);
+  --shadow-md: 0 6px 0 rgba(0, 0, 0, 0.2), 0 18px 34px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 12px 0 rgba(0, 0, 0, 0.22), 0 30px 70px rgba(0, 0, 0, 0.3);
+}
